@@ -1,0 +1,26 @@
+{
+	"name": "librify",
+	"version": "0.0.1",
+	"description": "Unify all of your games in one library",
+	"main": "main.js",
+	"scripts": {
+		"start": "electron ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/JortvD/librify.git"
+	},
+	"keywords": [
+		"game",
+		"game-launcher"
+	],
+	"author": "JortvD",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/JortvD/librify/issues"
+	},
+	"homepage": "https://github.com/JortvD/librify#readme",
+	"devDependencies": {
+		"electron": "^5.0.5"
+	}
+}
