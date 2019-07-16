@@ -4,7 +4,9 @@
 	"description": "Unify all of your games in one library",
 	"main": "main.js",
 	"scripts": {
-		"start": "electron ."
+		"dev": "node build/build.dev && npm run start",
+		"prod": "node build/build && npm run start",
+		"start": "electron main.js"
 	},
 	"repository": {
 		"type": "git",
@@ -21,6 +23,22 @@
 	},
 	"homepage": "https://github.com/JortvD/librify#readme",
 	"devDependencies": {
-		"electron": "^5.0.5"
+		"@babel/core": "^7.5.4",
+		"@babel/plugin-transform-react-jsx": "^7.3.0",
+		"@babel/preset-env": "^7.5.4",
+		"babel-loader": "^8.0.6",
+		"css-loader": "^3.0.0",
+		"electron": "^5.0.5",
+		"extract-loader": "^3.1.0",
+		"file-loader": "^4.0.0",
+		"html-webpack-plugin": "^3.2.0",
+		"node-sass": "^4.12.0",
+		"sass-loader": "^7.1.0",
+		"uglifyjs-webpack-plugin": "^2.1.3",
+		"webpack": "^4.35.3",
+		"webpack-merge": "^4.2.1"
+	},
+	"dependencies": {
+		"mithril": "^2.0.0-rc.8"
 	}
 }
