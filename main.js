@@ -1,3 +1,4 @@
+const path = require("path");
 const electron = require("electron");
 const {app, BrowserWindow} = electron;
 
@@ -10,7 +11,8 @@ app.on("ready", () => {
 	});
 
 	window.setMenu(null);
-	window.loadFile("index.html");
+	window.loadFile(path.join(__dirname, "dist/index.html"));
+	window.webContents.openDevTools();
 	window.once("ready-to-show", () => {
 		window.show();
 	});
