@@ -1,0 +1,27 @@
+body {
+	margin: 0;
+}
+
+.games {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+	background: lightgray;
+	display: flex;
+	flex-direction: row;
+
+	.game-list {
+		width: 25vw;
+		height: 100vh;
+		background: gray;
+
+		.game-item {
+			padding: 16px 32px;
+		}
+	}
+
+	.game {
+		width: 75vw;
+		height: 100vh;
+	}
+}
