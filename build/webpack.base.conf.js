@@ -2,7 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-	entry: ["./src/index.js", "./assets/scss/stylesheet.scss"],
+	entry: ["babel-polyfill", "./resources/scss/stylesheet.scss", "./src/index.js"],
 	output: {
 		path: path.resolve(__dirname, "../dist"),
 		filename: "js/index.js"
@@ -28,16 +28,19 @@ module.exports = {
 					"sass-loader"
 				]
 			}
-		]
+		],
+		noParse: /native\.js$/
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: "./src/index.html"
 		})
 	],
+	externals: /^(plugins)$/i,
 	resolve: {
 		alias: {
-			"@": path.resolve(__dirname, "../src")
+			"@": path.resolve(__dirname, "../src"),
+			"$": path.resolve(__dirname, "../")
 		}
 	},
 	target: "electron-renderer"
