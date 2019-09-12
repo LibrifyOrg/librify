@@ -68,12 +68,6 @@ body {
 			border-radius: 3px;
 			cursor: pointer;
 
-			&:hover {
-				svg {
-					fill: rgb(214, 214, 215);
-				}
-			}
-
 			svg {
 				transition: all .3s;
 				fill: #54575B;
@@ -82,6 +76,12 @@ body {
 			&.left {
 				margin-right: 0;
 				transform: rotate(180deg);
+			}
+
+			&:hover {
+				svg {
+					fill: rgb(214, 214, 215);
+				}
 			}
 		}
 	}
@@ -114,16 +114,17 @@ body {
 			border-radius: 3px;
 			cursor: pointer;
 
-			&:hover {
-				background: rgb(32, 33, 36);
-				svg {
-					fill: rgb(214, 214, 215);
-				}
-			}
-
 			svg {
 				transition: all .3s;
 				fill: #54575B;
+			}
+
+			&:hover {
+				background: rgb(32, 33, 36);
+
+				svg {
+					fill: rgb(214, 214, 215);
+				}
 			}
 		}
 	}
@@ -153,6 +154,11 @@ body {
 			text-align: center;
 			line-height: 0;
 
+			svg {
+				transition: all .3s;
+				fill: #54575B;
+			}
+
 			&:hover {
 				background: rgb(32, 33, 36);
 				color: rgb(214, 214, 215);
@@ -160,11 +166,6 @@ body {
 				svg {
 					fill: rgb(214, 214, 215);
 				}
-			}
-
-			svg {
-				transition: all .3s;
-				fill: #54575B;
 			}
 
 			&:last-child {
@@ -199,18 +200,6 @@ body {
 		overflow: hidden;
 		transition: all 1s;
 		flex-grow: 0;
-
-		&.opened {
-			width: 350px;
-
-			.game-item .title {
-				padding: 0 8px;
-			}
-
-			.list-toggle svg {
-				transform: rotate(180deg);
-			}
-		}
 
 		.game-item {
 			margin: 1px 4px;
@@ -290,6 +279,18 @@ body {
 				svg {
 					fill: rgb(214, 214, 215);
 				}
+			}
+		}
+
+		&.opened {
+			width: 350px;
+
+			.game-item .title {
+				padding: 0 8px;
+			}
+
+			.list-toggle svg {
+				transform: rotate(180deg);
 			}
 		}
 	}
@@ -410,6 +411,7 @@ body {
 			border-bottom-left-radius: 6px;
 			z-index: 4;
 			background: rgb(40, 44, 47);
+			transition: all 1s;
 
 			.type {
 				width: 16px;
@@ -421,17 +423,15 @@ body {
 				transition: all 0.2s;
 				cursor: pointer;
 
-				&:hover {
-					background: rgb(32, 33, 36);
-				}
-
 				img {
 					width: 16px;
 					height: 16px;
 				}
-			}
 
-			transition: all 1s;
+				&:hover {
+					background: rgb(32, 33, 36);
+				}
+			}
 
 			&.opened {
 				right: 350px;
