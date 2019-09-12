@@ -27,6 +27,17 @@ module.exports = {
 					"css-loader",
 					"sass-loader"
 				]
+			},
+			{
+				test: /\.ttf$/,
+				loader: 'url-loader',
+				options: {
+					limit: 100000
+				}
+			},
+			{
+				test: /\.(jpe?g|gif|png|wav|mp3)$/, 
+				loader: "file-loader"
 			}
 		],
 		noParse: /native\.js$/
