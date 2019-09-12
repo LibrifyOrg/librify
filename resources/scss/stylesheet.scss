@@ -1,27 +1,472 @@
+@font-face {
+    font-family: "Open Sans";
+	src: url("../fonts/opensans/OpenSans-Regular.ttf") format("truetype");
+	font-weight: 400;
+}
+
+@font-face {
+    font-family: "Muli";
+	src: url("../fonts/muli/Muli-Light.ttf") format("truetype");
+	font-weight: 300;
+}
+
+@font-face {
+    font-family: "Muli";
+	src: url("../fonts/muli/Muli-Regular.ttf") format("truetype");
+	font-weight: 400;
+}
+
+@font-face {
+    font-family: "Muli";
+	src: url("../fonts/muli/Muli-Bold.ttf") format("truetype");
+	font-weight: 700;
+}
+
+@font-face {
+    font-family: "Muli";
+	src: url("../fonts/muli/Muli-ExtraBold.ttf") format("truetype");
+	font-weight: 800;
+}
+
 body {
 	margin: 0;
+	overflow: hidden;
+	background: rgb(40, 44, 47);
+}
+
+.window {
+	width: 100vw;
+	height: 100vh;
+}
+
+.frame {
+	position: relative;
+	background: rgb(40, 44, 47);
+	height: 30px;
+	z-index: 2;
+	display: flex;
+
+	&.sidebarOpened {
+		.title {
+			width: 180px;
+		}
+
+		.buttons {
+			width: 100px;
+		}
+	}
+
+	.arrows {
+		display: flex;
+
+		.arrow {
+			width: 12px;
+			height: 12px;
+			padding: 5px 4px 5px 6px;
+			margin: 4px;
+			background: rgb(32, 33, 36);
+			border-radius: 3px;
+			cursor: pointer;
+
+			&:hover {
+				svg {
+					fill: rgb(214, 214, 215);
+				}
+			}
+
+			svg {
+				transition: all .3s;
+				fill: #54575B;
+			}
+
+			&.left {
+				margin-right: 0;
+				transform: rotate(180deg);
+			}
+		}
+	}
+
+	.title {
+		padding: 0 5px;
+		line-height: 30px;
+		font-family: "Muli";
+		font-size: 16px;
+		color: #72767D;
+		width: 280px;
+		-webkit-app-region: drag;
+		transition: 1s width;
+	}
+
+	.buttons {
+		width: 0;
+		display: flex;
+		justify-content: flex-end;
+		padding-right: 4px;
+		overflow: hidden;
+		transition: 1s width;
+
+		.button {
+			width: 15px;
+			height: 15px;
+			padding: 5px;
+			margin: 3px 0 3px 3px;
+			background: rgb(40, 44, 47);
+			border-radius: 3px;
+			cursor: pointer;
+
+			&:hover {
+				background: rgb(32, 33, 36);
+				svg {
+					fill: rgb(214, 214, 215);
+				}
+			}
+
+			svg {
+				transition: all .3s;
+				fill: #54575B;
+			}
+		}
+	}
+
+	.window-buttons {
+		width: calc(100vw - 350px);
+		display: flex;
+		justify-content: flex-end;
+
+		.drag {
+			-webkit-app-region: drag;
+			flex-grow: 1;
+		}
+
+		.button {
+			width: 12px;
+			height: 12px;
+			padding: 6px;
+			margin: 3px 0 3px 3px;
+			background: rgb(40, 44, 47);
+			border-radius: 3px;
+			cursor: pointer;
+			font-family: "Muli";
+			font-size: 20px;
+			font-weight: 400;
+			color: #54575B;
+			text-align: center;
+			line-height: 0;
+
+			&:hover {
+				background: rgb(32, 33, 36);
+				color: rgb(214, 214, 215);
+
+				svg {
+					fill: rgb(214, 214, 215);
+				}
+			}
+
+			svg {
+				transition: all .3s;
+				fill: #54575B;
+			}
+
+			&:last-child {
+				margin-right: 4px;
+			}
+		}
+	}
+}
+
+#body {
+	width: 100vh;
+	height: calc(100vh - 30px);
 }
 
 .games {
 	position: relative;
 	width: 100vw;
-	height: 100vh;
-	background: lightgray;
+	height: calc(100vh - 30px);
 	display: flex;
-	flex-direction: row;
+	box-sizing: border-box;
 
 	.game-list {
-		width: 25vw;
-		height: 100vh;
-		background: gray;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		width: 48px;
+		height: calc(100vh - 30px);
+		background: rgb(40, 44, 47);
+		color: darken(rgb(214, 214, 215), 20%);
+		font-family: "Muli";
+		z-index: 2;
+		overflow: hidden;
+		transition: all 1s;
+		flex-grow: 0;
+
+		&.opened {
+			width: 350px;
+
+			.game-item .title {
+				padding: 0 8px;
+			}
+
+			.list-toggle svg {
+				transform: rotate(180deg);
+			}
+		}
 
 		.game-item {
-			padding: 16px 32px;
+			margin: 1px 4px;
+			transition: 0.3s all;
+			cursor: pointer;
+			border-radius: 8px;
+			display: flex;
+			height: 40px;
+			overflow: hidden;
+			position: relative;
+
+			.icon {
+				flex-grow: 0;
+				width: 30px;
+				height: 30px;
+				margin: 4px;
+				border-radius: 8px;
+				border: 1px solid rgb(32, 33, 36);
+				background: rgb(32, 33, 36);
+				transition: 0.3s all;
+				background-size: cover;
+			}
+
+			.title {
+				flex-grow: 1;
+				line-height: 40px;
+				width: 0;
+				padding: 0;
+				transition: all 1s;
+			}
+
+			&.selected {
+				color: rgb(214, 214, 215);
+				background: lighten(rgb(40, 44, 47), 4%);
+
+				&:hover {
+					color: rgb(214, 214, 215);
+					background: lighten(rgb(40, 44, 47), 4%);
+
+					.icon {
+						border-color: rgb(214, 214, 215);
+					}
+				}
+
+				.icon {
+					border-color: rgb(214, 214, 215);
+				}
+			}
+
+			&:hover {
+				color: darken(rgb(214, 214, 215), 10%);
+				background: lighten(rgb(40, 44, 47), 2%);
+
+				.icon {
+					border-color: mix(rgb(214, 214, 215), rgb(40, 44, 47));
+				}
+			}
+		}
+
+		.list-toggle {
+			position: absolute;
+			width: 16px;
+			height: 16px;
+			padding: 12px;
+			bottom: 4px;
+			right: 4px;
+			background: rgb(32, 33, 36);
+			border-radius: 8px;
+			z-index: 10;
+
+			svg {
+				transition: 0.3s fill, 1s transform;
+				fill: #54575B;
+			} 
+
+			&:hover {
+				svg {
+					fill: rgb(214, 214, 215);
+				}
+			}
 		}
 	}
 
 	.game {
-		width: 75vw;
-		height: 100vh;
+		height: calc(100vh - 30px);
+		border-top-left-radius: 12px;
+		position: relative;
+		flex-grow: 1;
+
+		.background {
+			position: absolute;
+			height: calc(100vh - 30px);
+			width: 100%;
+			z-index: 1;
+			filter: brightness(40%);
+			background-size: cover;
+			border-top-left-radius: 12px;
+
+			&:after {
+				content: '';
+				position: absolute;
+				top: 0; left: 0; bottom: 0; right: 0;
+				background: radial-gradient(circle, transparent 50%, black 150%);
+				border-top-left-radius: 12px;
+			}
+		}
+
+		.info {
+			position: absolute;
+			z-index: 2;
+			display: flex;
+			bottom: 0;
+			right: 40px;
+			justify-content: flex-end;
+
+			.container {
+				&.title {
+					display: flex;
+					flex-direction: column;
+					justify-content: flex-end;
+
+					.title {
+						height: 80px;
+						line-height: 80px;
+						font-size: 50px;
+						padding: 20px;
+						color: white;
+						font-family: "Muli";
+						font-weight: 700;
+					}
+				}
+
+				&.right {
+					margin: 0 20px 20px 0;
+					display: flex;
+					justify-content: flex-end;
+					flex-direction: column;
+					font-family: "Muli";
+					color: rgb(214, 214, 215);
+
+					.banner {
+						width: 180px;
+						margin-bottom: 2px;
+						border-radius: 6px;
+					}
+
+					.primary-action {
+						width: 180px;
+						height: 36px;
+						margin: 2px 0;
+						line-height: 36px;
+						cursor: pointer;
+						text-align: center;
+						background: rgb(40, 44, 47);
+						border-radius: 6px;
+						font-size: 15px;
+						transition: all 0.3s;
+
+						&:hover {
+							background: rgb(32, 33, 36);
+							color: white;
+						}
+					}
+
+					.secondary-actions {
+						width: 176px;
+						height: 32px;
+						margin: 2px 0;
+						line-height: 32px;
+						cursor: pointer;
+						text-align: center;
+						border: 2px solid rgb(40, 44, 47);
+						border-radius: 6px;
+						font-size: 14px;
+						transition: all 0.3s;
+
+						&:hover {
+							border-color: rgb(32, 33, 36);
+							background: rgb(32, 33, 36);
+							color: white;
+						}
+					}
+				}
+			}
+		}
+
+		.panel-types {
+			display: flex;
+			justify-content: flex-start;
+			flex-direction: column-reverse;
+			position: absolute;
+			width: 40px;
+			right: 0;
+			bottom: 20px;
+			padding: 1px 0;
+			border-top-left-radius: 6px;
+			border-bottom-left-radius: 6px;
+			z-index: 4;
+			background: rgb(40, 44, 47);
+
+			.type {
+				width: 16px;
+				height: 16px;
+				padding: 10px;
+				margin: 1px 2px;
+				border-radius: 6px;
+				background: rgb(37, 41, 44);
+				transition: all 0.2s;
+				cursor: pointer;
+
+				&:hover {
+					background: rgb(32, 33, 36);
+				}
+
+				img {
+					width: 16px;
+					height: 16px;
+				}
+			}
+
+			transition: all 1s;
+
+			&.opened {
+				right: 350px;
+			}
+		}
+
+		.panel {
+			z-index: 4;
+			position: absolute;
+			height: 100vh;
+			width: 350px;
+			right: -350px;
+			transition: right 1s;
+			background: rgb(40, 44, 47);
+
+			&.opened {
+				right: 0;
+			}
+		}
+
+		.darken {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+			z-index: 3;
+			background: black;
+			transition: all 1s;
+			border-top-left-radius: 12px;
+			pointer-events: none;
+
+			&.opened {
+				opacity: 0.35;
+				pointer-events: initial;
+			}
+		}
 	}
 }
