@@ -7,9 +7,10 @@ app.on("ready", () => {
 		webPreferences: {
 			nodeIntegration: true
 		},
-		width: 1500,
-		height: 800,
-		show: false
+		width: 2100,
+		height: 900,
+		show: false,
+		frame: false
 	});
 
 	window.setMenu(null);
