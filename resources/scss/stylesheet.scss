@@ -269,6 +269,7 @@ body {
 			background: rgb(32, 33, 36);
 			border-radius: 8px;
 			z-index: 10;
+			cursor: pointer;
 
 			svg {
 				transition: 0.3s fill, 1s transform;
@@ -426,6 +427,10 @@ body {
 				img {
 					width: 16px;
 					height: 16px;
+				}
+
+				&.selected {
+					background: rgb(32, 33, 36);
 				}
 
 				&:hover {
