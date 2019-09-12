@@ -14,7 +14,7 @@ export default class SourceManager {
 	}
 
 	create(config) {
-		if(!config.name) return;
+		if(!config.name || !this.sources.get(config.name)) return;
 
 		return new (this.sources.get(config.name))(config);
 	}
