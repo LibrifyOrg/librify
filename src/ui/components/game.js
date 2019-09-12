@@ -13,13 +13,18 @@ export default class GameComponent {
 		this.game = vnode.attrs.game;
 
 		let panelTypes = this.app.gameManager.panelManager.toArray().map(panel => {
-			return m(".type", {id: panel.name, onclick: () => {
+			return m(`.type#panel-type-${panel.name}`, {onclick: () => {
 				let prevType = this.panelType;
 
-				this.panelType = panel.name; 
-
+				this.panelType = panel.name;
+				
+				if(prevType) document.getElementById(`panel-type-${prevType}`).classList.toggle("selected");
+				
 				if(prevType === this.panelType || prevType === undefined) this.toggle();
-				else m.redraw();
+				else {
+					document.getElementById(`panel-type-${this.panelType}`).classList.toggle("selected");
+					m.redraw();
+				}
 			}}, [
 				m("img", {src: panel.icon})
 			]);
@@ -55,6 +60,7 @@ export default class GameComponent {
 		if(this.panelOpened) return;
 
 		this.panelOpened = true;
+		document.getElementById(`panel-type-${this.panelType}`).classList.toggle("selected");
 		document.getElementById("panel").classList.add("opened");
 		document.getElementById("panel-types").classList.add("opened");
 		document.getElementById("darken").classList.add("opened");
