@@ -1,6 +1,7 @@
 import m from "mithril";
 
 const arrowSvg = m.trust(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z"/></svg>`);
+const playSvg = m.trust(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M3 22v-20l18 10-18 10z"/></svg>`);
 
 export default class GameListComponent {
 	oninit(vnode) {
@@ -12,6 +13,8 @@ export default class GameListComponent {
 		const games = Array.from(this.app.games.values()).sort((a, b) => a.data.name.localeCompare(b.data.name)).map((game, index) => {
 			if(this.selected === undefined) this.selected = game.id;
 
+			const playable = game.actions.length > 0;
+
 			return m(`.game-item${game.id === this.selected ? ".selected" : ""}#${game.id}`, {onclick: () => {
 				vnode.attrs.parent.game = game;
 
@@ -22,8 +25,8 @@ export default class GameListComponent {
 
 				m.redraw();
 			}}, [
-				m(".icon", {style: game.icon ? {backgroundImage: `url(${game.icon})`} : {}}),
-				m(".title", game.name)
+				m(`.icon ${playable ? "playable" : ""}`, {style: game.data.icon ? {backgroundImage: `url(${game.data.icon})`} : {}, onclick: () => playable ? this.app.games.launch(game) : {}}, m(".play-icon", playSvg)),
+				m(".title", game.data.name)
 			]);
 		});
 
