@@ -1,25 +1,28 @@
 export default class Game {
-	constructor(app, config) {
-		this.id = config.id;
-		this.name = config.name;
-		this.origin = config.origin;
-		this.background = config.background;
-		this.icon = config.icon;
-		this.banner = config.banner;
-		this.sources = config.sources.map(source => app.gameManager.sourceManager.create(source)).filter(source => source !== undefined);
+	constructor(app, data) {
+		this.data = Object.assign(...Array.from(app.games.dataTypes.values()).map(dataType => dataType.default()), data);
+
+		for(let [key, dataType] of Array.from(app.games.dataTypes.entries())) {
+			dataType.fromObject(this.data[key], this);
+		}
+	}
+
+	get id() {
+		return this.data.id;
+	}
+
+	set id(value) {
+		this.data.id = value;
 	}
 
 	toObject() {
-		let obj = {
-			id: this.id,
-			name: this.name,
-			origin: this.origin,
-			background: this.background,
-			icon: this.icon,
-			banner: this.banner
-		};
+		let obj = this.data;
 
-		obj.sources = this.sources.map(source => source.toObject());
+		for(let [key, dataType] of Array.from(app.games.dataTypes.entries())) {
+			const value = dataType.toObject(this);
+
+			if(value !== undefined) obj[key] = value;
+		}
 
 		return obj;
 	}

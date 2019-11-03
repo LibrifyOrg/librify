@@ -6,12 +6,15 @@ import SourceManager from "@/game/source/manager";
 import LauncherManager from "@/game/launcher/manager";
 import PanelManager from "@/game/panel/manager";
 import LaunchActionTypeManager from "@/game/action/manager";
+import DataTypeManager from "@/game/data/manager";
 import SettingsPanel from "@/game/panel/default/settings";
 import AchievementsPanel from "@/game/panel/default/achievements";
 import RatingsPanel from "@/game/panel/default/ratings";
 import TimePlayedPanel from "@/game/panel/default/timeplayed";
 import StoragePanel from "@/game/panel/default/storage";
 import InfoPanel from "@/game/panel/default/info";
+import SourceDataType from "@/game/source/data";
+import ActionDataType from "./action/data";
 
 export default class GameManager extends Map {
 	constructor(app) {
@@ -28,6 +31,9 @@ export default class GameManager extends Map {
 		this.panelManager.register("ratings", new RatingsPanel(this.app));
 		this.panelManager.register("info", new InfoPanel(this.app));
 		this.actionTypes = new LaunchActionTypeManager(this);
+		this.dataTypes = new DataTypeManager(this);
+		this.dataTypes.register("sources", new SourceDataType(this));
+		this.dataTypes.register("actions", new ActionDataType(this));
 	}
 
 	async initialize() {
