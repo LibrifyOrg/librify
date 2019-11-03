@@ -9,7 +9,7 @@ export default class GameListComponent {
 	}
 
 	view(vnode) {
-		const games = this.app.gameManager.games.map((game, index) => {
+		const games = Array.from(this.app.games.values()).sort((a, b) => a.data.name.localeCompare(b.data.name)).map((game, index) => {
 			if(this.selected === undefined) this.selected = game.id;
 
 			return m(`.game-item${game.id === this.selected ? ".selected" : ""}#${game.id}`, {onclick: () => {

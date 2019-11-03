@@ -5,7 +5,7 @@ import GameListComponent from "@/ui/components/gamelist";
 export default class GamesView {
 	oninit(vnode) {
 		this.app = vnode.attrs.app;
-		this.game = this.app.gameManager.games[0];
+		this.game = Array.from(this.app.games.values()).sort((a, b) => a.data.name.localeCompare(b.data.name))[0];
 	}
 
 	onupdate() {
@@ -13,7 +13,7 @@ export default class GamesView {
 			return;
 		} 
 		
-		this.game = this.app.gameManager.games[0];
+		this.game = Array.from(this.app.games.values()).sort((a, b) => a.data.name.localeCompare(b.data.name))[0];
 		m.redraw();
 	}
 
