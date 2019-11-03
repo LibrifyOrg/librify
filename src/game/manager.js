@@ -1,7 +1,6 @@
 import Game from "@/game/model";
-import {EventEmitter} from "events";
-import shortid from "shortid";
 import m from "mithril";
+import shortid from "shortid";
 import SourceManager from "@/game/source/manager";
 import LauncherManager from "@/game/launcher/manager";
 import PanelManager from "@/game/panel/manager";
@@ -21,19 +20,19 @@ export default class GameManager extends Map {
 		super();
 
 		this.app = app;
-		this.sourceManager = new SourceManager(this);
-		this.launcherManager = new LauncherManager(this);
-		this.panelManager = new PanelManager(this);
-		this.panelManager.register("settings", new SettingsPanel(this.app));
-		this.panelManager.register("storage", new StoragePanel(this.app));
-		this.panelManager.register("achievements", new AchievementsPanel(this.app));
-		this.panelManager.register("timeplayed", new TimePlayedPanel(this.app));
-		this.panelManager.register("ratings", new RatingsPanel(this.app));
-		this.panelManager.register("info", new InfoPanel(this.app));
+		this.sources = new SourceManager(this);
+		this.launchers = new LauncherManager(this);
+		this.panels = new PanelManager(this);
 		this.actionTypes = new LaunchActionTypeManager(this);
 		this.dataTypes = new DataTypeManager(this);
 		this.dataTypes.register("sources", new SourceDataType(this));
 		this.dataTypes.register("actions", new ActionDataType(this));
+		this.panels.register("settings", new SettingsPanel(this.app));
+		this.panels.register("storage", new StoragePanel(this.app));
+		this.panels.register("achievements", new AchievementsPanel(this.app));
+		this.panels.register("timeplayed", new TimePlayedPanel(this.app));
+		this.panels.register("ratings", new RatingsPanel(this.app));
+		this.panels.register("info", new InfoPanel(this.app));
 	}
 
 	async initialize() {
@@ -52,16 +51,17 @@ export default class GameManager extends Map {
 		await this.find();
 	}
 
-	async find() {
-		const launchers = Array.from(this.launcherManager.launchers.values());
+	async findAll() {
+		const launchers = Array.from(this.launchers.keys());
 
-		for(let launcher of launchers) {
-			await launcher.findGames();
+		for(let name of launchers) {
+			await this.find(name)
 		}
 	}
 
-	create({name, origin}) {
-		let sources = Array.from(this.sourceManager.sources.keys()).map(name => {return {name, populated: false}});
+	async find(launcherName) {
+		const launcher = this.launchers.get(launcherName);
+		const newGames = await launcher.fetchNewGames(Array.from(this.values()));
 
 		this.games.push(new Game(this.app, {name, id: shortid(), origin, sources}));
 
@@ -81,6 +81,6 @@ export default class GameManager extends Map {
 	}
 
 	save() {
-		this.config.set("games", this.games.map(game => game.toObject())).write();
+		this.config.set("games", Array.from(this.values()).map(game => game.toObject())).write();
 	}
 }
