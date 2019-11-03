@@ -74,8 +74,22 @@ export default class GameManager extends Map {
 		}
 	}
 
+	async launch(game, index) {
+		let action;
 
-		m.redraw();
+		if(index === undefined) action = game.actions.find(action => action.primary);
+		else action = game.actions[index];
+
+		if(action === undefined) return;
+
+		this.actionTypes.get(action.type)(game, action);
+	}
+
+	create({name}) {
+		let sources = Array.from(this.sources.keys()).map(name => {return {name, populated: false}});
+		let id = shortid();
+
+		return new Game(this.app, {name, id, sources});
 	}
 
 	delete(id) {
