@@ -37,6 +37,7 @@ export default class GameComponent {
 				<div class="background" style={{backgroundImage: `url(${this.game.data.background})`}}></div>
 				<div class="info">
 					<div class="container title">
+						<div class="title">{this.game.data.name}</div>
 					</div>
 					<div class={`container right ${!this.game.data.banner ? "no-banner" : ""}`}>
 						{this.game.data.banner ? <img class="banner" src={this.game.data.banner} /> : ""}
