@@ -1,5 +1,5 @@
 import m from "mithril";
-import path from "path";
+const arrowSvg = m.trust(`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z"/></svg>`);
 import GamePanelComponent from "@/ui/components/gamepanel";
 
 export default class GameComponent {
@@ -30,17 +30,22 @@ export default class GameComponent {
 			]);
 		});
 
+		const secondaryAction = this.game.actions.find(action => !action.primary);
+
 		return (
 			<div class="game">
-				<div class="background" style={{backgroundImage: `url(${this.game.background})`}}></div>
+				<div class="background" style={{backgroundImage: `url(${this.game.data.background})`}}></div>
 				<div class="info">
 					<div class="container title">
-						<div class="title">{this.game.name}</div>
 					</div>
-					<div class="container right">
-						<img class="banner" src={this.game.banner} />
-						<div class="primary-action">Play now</div>
-						<div class="secondary-actions">With steam overlay</div>
+					<div class={`container right ${!this.game.data.banner ? "no-banner" : ""}`}>
+						{this.game.data.banner ? <img class="banner" src={this.game.data.banner} /> : ""}
+						{this.game.actions.length > 0 ? <div class="primary-action" onclick={() => this.app.games.launch(this.game)}>Play</div> : <div class="no-action">Not launchable</div>}
+						{this.game.actions.length > 1 ? <div class="secondary-actions" onmouseleave={() => this.game.actions.length > 2 ? this.closeActionDropup() : {}}>
+							<div class="dropup-name" onclick={() => this.app.games.launch(this.game, this.game.actions.indexOf(secondaryAction))}>{secondaryAction.name}</div>
+							{this.game.actions.length > 2 ? <div id="dropup-button" class="dropup-button" onclick={() => this.toggleActionDropup()}>{arrowSvg}</div> : ""}
+							<div id="dropup-menu" class="dropup-menu">{this.game.actions.map(action => <div class="dropup-item" onclick={() => this.app.games.launch(this.game, this.game.actions.indexOf(action))}>{action.name}</div>)}</div>
+						</div> : ""}
 					</div>
 				</div>
 				<div class="panel-types" id="panel-types">
@@ -50,6 +55,16 @@ export default class GameComponent {
 				<GamePanelComponent app={this.app} game={this.game} type={this.panelType}></GamePanelComponent>
 			</div>
 		);
+	}
+
+	toggleActionDropup() {
+		document.getElementById("dropup-button").classList.toggle("opened");
+		document.getElementById("dropup-menu").classList.toggle("opened");
+	}
+
+	closeActionDropup() {
+		document.getElementById("dropup-button").classList.remove("opened");
+		document.getElementById("dropup-menu").classList.remove("opened");
 	}
 
 	toggle() {
