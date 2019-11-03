@@ -30,11 +30,9 @@ export default class GameListComponent {
 			]);
 		});
 
-		games.push(m(".list-toggle", {onclick: () => {
+		return m(".game-list.opened#game-list", [m(".container", games), m(".list-toggle", {onclick: () => {
 			document.getElementById("game-list").classList.toggle("opened");
 			document.getElementById("frame").classList.toggle("sidebarOpened");
-		}}, arrowSvg));
-
-		return m(".game-list.opened#game-list", games);
+		}}, arrowSvg)]);
 	}
 }
