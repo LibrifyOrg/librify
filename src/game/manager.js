@@ -48,7 +48,7 @@ export default class GameManager extends Map {
 	set(id, game) {
 		super.set(id, game);
 
-		await this.find();
+		m.redraw();
 	}
 
 	async findAll() {
@@ -63,13 +63,17 @@ export default class GameManager extends Map {
 		const launcher = this.launchers.get(launcherName);
 		const newGames = await launcher.fetchNewGames(Array.from(this.values()));
 
-		this.games.push(new Game(this.app, {name, id: shortid(), origin, sources}));
+		for(let newGame of newGames) {
+			if(Array.from(this.values()).find(game => game.data.name === newGame.data.name)) {
+				continue;
+			}
 
-		m.redraw();
+			newGame.data.origin = name;
+
+			this.set(newGame.id, newGame);
+		}
 	}
 
-	remove(id) {
-		this.games = this.games.filter(game => game.id !== id);
 
 		m.redraw();
 	}
