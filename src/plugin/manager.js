@@ -4,10 +4,11 @@ import util from "util";
 import Plugin from "@/plugin/model";
 import native from "@/native";
 
-export default class PluginManager {
+export default class PluginManager extends Map {
 	constructor(app) {
+		super();
+
 		this.app = app;
-		this.plugins = new Map();
 		this.pluginFolder = path.resolve("plugins/");
 	}
 
@@ -58,6 +59,6 @@ export default class PluginManager {
 
 		await plugin.execute("unload");
 
-		this.plugins.delete(plugin.name);
+		return plugin;
 	}
 }

@@ -1,20 +1,16 @@
 import LauncherModel from "@/game/launcher/model";
 
-export default class LauncherManager {
+export default class LauncherManager extends Map {
 	constructor() {
-		this.launchers = new Map();
+		super();
 	}
 
 	register(name, launcher) {
-		this.launchers.set(name, launcher);
+		this.set(name, launcher);
 	}
 
 	unregister(name) {
-		this.launchers.delete(name);
-	}
-
-	get(name) {
-		return this.launchers.get(name);
+		this.delete(name);
 	}
 
 	model() {

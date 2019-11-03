@@ -1,27 +1,19 @@
 import PanelModel from "@/game/panel/model";
 
-export default class PanelManager {
+export default class PanelManager extends Map {
 	constructor() {
-		this.panels = new Map();
+		super();
 	}
 
 	register(name, panel) {
-		this.panels.set(name, panel);
+		this.set(name, panel);
 	}
 
 	unregister(name) {
-		this.panels.delete(name);
-	}
-
-	get(name) {
-		return this.panels.get(name);
+		this.delete(name);
 	}
 
 	model() {
 		return PanelModel;
-	}
-
-	toArray() {
-		return Array.from(this.panels.values());
 	}
 }

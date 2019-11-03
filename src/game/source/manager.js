@@ -1,12 +1,12 @@
 import SourceModel from "@/game/source/model";
 
-export default class SourceManager {
+export default class SourceManager extends Map {
 	constructor() {
-		this.sources = new Map();
+		super();
 	}
 
 	register(name, sourceClass) {
-		this.sources.set(name, sourceClass);
+		this.set(name, sourceClass);
 	}
 
 	model() {
@@ -14,8 +14,8 @@ export default class SourceManager {
 	}
 
 	create(config) {
-		if(!config.name || !this.sources.get(config.name)) return;
+		if(!config.name || !this.get(config.name)) return;
 
-		return new (this.sources.get(config.name))(config);
+		return new (this.get(config.name))(config);
 	}
 }

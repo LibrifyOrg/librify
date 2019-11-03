@@ -12,7 +12,7 @@ import TimePlayedPanel from "@/game/panel/default/timeplayed";
 import StoragePanel from "@/game/panel/default/storage";
 import InfoPanel from "@/game/panel/default/info";
 
-export default class GameManager extends EventEmitter {
+export default class GameManager extends Map {
 	constructor(app) {
 		super();
 
@@ -31,12 +31,15 @@ export default class GameManager extends EventEmitter {
 	async initialize() {
 		this.config = await this.app.configs.get("games.json");
 		this.config.defaults({games: []}).write();
-		this.games = this.config.get("games").value().map(gameData => {
+		this.config.get("games").value().forEach(gameData => {
 			const game = new Game(this.app, gameData);
-			this.emit("load", game);
-
-			return game;
+			
+			this.set(game.id, game);
 		});
+	}
+
+	set(id, game) {
+		super.set(id, game);
 
 		await this.find();
 	}
@@ -63,8 +66,10 @@ export default class GameManager extends EventEmitter {
 		m.redraw();
 	}
 
-	exists(id) {
-		return this.games.find(game => game.id === id) !== undefined;
+	delete(id) {
+		super.delete(id);
+
+		m.redraw();
 	}
 
 	save() {
