@@ -6,6 +6,7 @@ import WindowView from "@/ui/views/window"
 export default class UIHandler {
 	constructor(app) {
 		this.app = app;
+		this.window = app.electron.getCurrentWindow();
 	}
 
 	startRendering() {
