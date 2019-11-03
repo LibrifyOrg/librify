@@ -196,10 +196,33 @@ body {
 		background: rgb(40, 44, 47);
 		color: darken(rgb(214, 214, 215), 20%);
 		font-family: "Muli";
-		z-index: 2;
+		z-index: 5;
 		overflow: hidden;
-		transition: all 1s;
+		transition: width 1s;
 		flex-grow: 0;
+
+		.container {
+			width: 100%;
+			overflow-y: auto;
+
+			&::-webkit-scrollbar {
+				width: 0;
+				left: -2px;
+			}
+
+			&::-webkit-scrollbar-thumb {
+				background: lighten(rgb(40, 44, 47), 4%);
+				border-radius: 4px;
+
+				&:hover {
+					background: lighten(rgb(40, 44, 47), 12%);
+				}
+			}
+
+			&::-webkit-scrollbar-track {
+				background: transparent;
+			}
+		}
 
 		.game-item {
 			margin: 1px 4px;
@@ -210,6 +233,7 @@ body {
 			height: 40px;
 			overflow: hidden;
 			position: relative;
+			flex-shrink: 0;
 
 			.icon {
 				flex-grow: 0;
@@ -221,6 +245,24 @@ body {
 				background: rgb(32, 33, 36);
 				transition: 0.3s all;
 				background-size: cover;
+
+				.play-icon {
+					width: 16px;
+					height: 16px;
+					padding: 7px;
+					border-radius: 7px;
+					background: lighten(rgb(40, 44, 47), 10%);
+					opacity: 0;
+					transition: opacity .3s;
+
+					svg {
+						fill: lighten(rgb(40, 44, 47), 40%);
+					}
+				}
+
+				&.playable:hover .play-icon {
+					opacity: .8;
+				}
 			}
 
 			.title {
@@ -292,6 +334,12 @@ body {
 
 			.list-toggle svg {
 				transform: rotate(180deg);
+			}
+
+			.container {
+				&::-webkit-scrollbar {
+					width: 8px;
+				}
 			}
 		}
 	}
@@ -377,6 +425,19 @@ body {
 						}
 					}
 
+					.no-action {
+						width: 180px;
+						height: 36px;
+						margin: 2px 0;
+						line-height: 36px;
+						text-align: center;
+						cursor: not-allowed;
+						text-align: center;
+						border: 2px solid rgb(40, 44, 47);
+						border-radius: 6px;
+						font-size: 14px;
+					}
+
 					.secondary-actions {
 						width: 176px;
 						height: 32px;
@@ -388,12 +449,88 @@ body {
 						border-radius: 6px;
 						font-size: 14px;
 						transition: all 0.3s;
+						display: flex;
+						position: relative;
+
+						.dropup-name {
+							flex-grow: 1;
+							text-align: center;
+							margin-right: -9px;
+						}
+
+						.dropup-menu {
+							position: absolute;
+							bottom: calc(100% - 2px);
+							left: -2px;
+							transform: scaleY(0);     
+							transform-origin: bottom;
+							overflow: hidden;
+							width: 180px;
+							background: rgb(32, 33, 36);
+							display: flex;
+							flex-direction: column;
+							transition: transform .5s;
+							border-top-left-radius: 6px;
+							border-top-right-radius: 6px;
+
+							.dropup-item {
+								width: 100%;
+								height: 32px;
+								border-radius: 6px;
+								text-align: center;
+								line-height: 32px;
+								background: rgb(32, 33, 36);
+								transition: background .3s;
+								color: rgb(214, 214, 215);
+
+								&:hover {
+									background: lighten(rgb(32, 33, 36), 2%);
+									color: white;
+								}
+							}
+
+							&.opened {
+								transform: scaleY(1);
+							}
+						}
+
+						.dropup-button {
+							width: 14px;
+							height: 14px;
+							padding: 9px;
+							transition: background .3s;
+							border-radius: 3px;
+
+							svg {
+								transform: rotate(270deg);
+								fill: lighten(rgb(40, 44, 47), 10%);
+								transition: all .3s;
+							}
+
+							&:hover {
+								background: lighten(rgb(32, 33, 36), 3%);
+
+								svg {
+									fill: white;
+								}
+							}
+
+							&.opened svg {
+								transform: rotate(90deg);
+							}
+						}
 
 						&:hover {
 							border-color: rgb(32, 33, 36);
 							background: rgb(32, 33, 36);
 							color: white;
 						}
+					}
+
+					&.no-banner {
+						height: 120px;
+						margin-bottom: 0;
+						justify-content: center;
 					}
 				}
 			}
