@@ -9,6 +9,11 @@ export default class ConfigManager extends Map {
 		this.configPath = "resources/config/";
 	}
 
+	/**
+	 * Return the config from the config folder with the specified filename. Will return cached config if it has already been loaded.
+	 * @param {String} name The name of the config file
+	 * @returns A promise resolving to the config as Lodash object
+	 */
 	async get(name) {
 		if(this.has(name)) return super.get(name);
 
@@ -20,6 +25,12 @@ export default class ConfigManager extends Map {
 
 		return config;
 	}
+
+	/**
+	 * Works the same as .get(), but forces it to load the config instead of returning the cached version, if applicable.
+	 * @param {String} name The name of the config file
+	 * @returns A promise resolving to the config as Lodash object
+	 */
 	forceGet(name) {
 		if(this.has(name)) this.delete(name);
 
