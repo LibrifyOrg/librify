@@ -1,3 +1,4 @@
+import electron from "electron";
 import UIHandler from "@/ui/handler";
 import WindowHandler from "@/ui/window";
 import GameManager from "@/game/manager";
@@ -12,6 +13,7 @@ export default class Application extends EventEmitter {
 		this.configManager = new ConfigManager(this);
 		this.pluginManager = new PluginManager(this);
 		this.gameManager = new GameManager(this);
+		this.electron = electron.remote;
 	}
 
 	async start() {
