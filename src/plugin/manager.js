@@ -9,55 +9,53 @@ export default class PluginManager extends Map {
 		super();
 
 		this.app = app;
-		this.pluginFolder = path.resolve("plugins/");
+		this.folder = path.resolve("plugins/");
 	}
 
 	async loadAll() {
-		if(!(await util.promisify(fs.stat)(this.pluginFolder)).isDirectory()) {
-			fs.mkdir(pluginFolder);
+		if(!(await util.promisify(fs.stat)(this.folder)).isDirectory()) {
+			fs.mkdir(folder);
 		}
 
-		const paths = await util.promisify(fs.readdir)(this.pluginFolder);
+		const paths = await util.promisify(fs.readdir)(this.folder);
 
 		for(const path of paths) {
-			if(!(await util.promisify(fs.stat)(`${this.pluginFolder}/${path}/`)).isDirectory()) {
-				return;
+			if(!(await util.promisify(fs.stat)(`${this.folder}/${path}/`)).isDirectory()) {
+				continue;
 			}
 
-			this.load(path);
+			await this.load(path);
 		}
 	}
 
 	async load(path) {
-		let mainFile;
+		let config;
 		
 		try {
-			mainFile = native.require(`${this.pluginFolder}/${path}/plugin`);
+			config = native.require(`${this.folder}/${path}/librimod.json`);
 		}
 		catch(e) {
-			console.log(e);
-			console.error(`Couldn't find the main file for the plugin in ${path}`);
-			return;
+			return console.error(`Couldn't load the config file for the plugin in ${path} (${e.message}).`);
 		}
 
-		const plugin = new Plugin(mainFile);
-		this.plugins.set(plugin.name, plugin);
-
-		await plugin.execute("load", this.app);
-
-		return plugin;
-	}
-
-	async unloadAll() {
-		for(let plugin of this.plugins.entries) {
-			await this.unload(plugin);
+		if(config.name === undefined || config.version === undefined || config.index === undefined || config.author === undefined) {
+			return console.error(`The loaded config is missing required settings.`);
 		}
-	}
 
-	async unload(pluginData) {
-		let plugin = typeof pluginData === "string" ? this.plugins.get(name) : pluginData;
+		let indexFunction;
+		
+		try {
+			indexFunction = native.require(`${this.folder}/${path}/${config.index}`);
+		}
+		catch(e) {
+			console.error(e);
+			return console.error(`Couldn't find the main file for the plugin in ${path} (${e.message}).`);
+		}
 
-		await plugin.execute("unload");
+		const plugin = new Plugin(Object.assign(config, {indexFunction}));
+		this.set(plugin.name, plugin);
+
+		await plugin.indexFunction(this.app);
 
 		return plugin;
 	}
