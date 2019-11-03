@@ -6,7 +6,7 @@ export default class GamePanelComponent {
 	}
 
 	view(vnode) {
-		let panel = this.app.gameManager.panelManager.get(vnode.attrs.type);
+		let panel = this.app.games.panels.get(vnode.attrs.type);
 
 		if(panel === undefined) return (<div class="panel" id="panel"></div>);
 

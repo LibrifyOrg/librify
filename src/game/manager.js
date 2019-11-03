@@ -29,7 +29,7 @@ export default class GameManager extends EventEmitter {
 	}
 
 	async initialize() {
-		this.config = await this.app.configManager.get("games.json");
+		this.config = await this.app.configs.get("games.json");
 		this.config.defaults({games: []}).write();
 		this.games = this.config.get("games").value().map(gameData => {
 			const game = new Game(this.app, gameData);

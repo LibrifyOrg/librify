@@ -7,22 +7,25 @@ import { EventEmitter } from "events";
 
 export default class Application extends EventEmitter {
 	constructor() {
-		this.uiHandler = new UIHandler(this);
-		this.configManager = new ConfigManager(this);
-		this.pluginManager = new PluginManager(this);
-		this.gameManager = new GameManager(this);
+		super();
+
 		this.electron = electron.remote;
+		this.ui = new UIHandler(this);
+		this.configs = new ConfigManager(this);
+		this.plugins = new PluginManager(this);
+		this.games = new GameManager(this);
 	}
 
 	async start() {
-		await this.pluginManager.loadAll();
-		await this.gameManager.initialize();
-		this.uiHandler.startRendering();
+		await this.games.initialize();
+		await this.plugins.loadAll();
+		await this.games.findAll();
+		this.ui.startRendering();
 		this.emit("start");
 	}
 
 	async stop() {
-		this.gameManager.save();
 		this.emit("stop");
+		this.games.save();
 	}
 }

@@ -12,7 +12,7 @@ export default class GameComponent {
 	view(vnode) {
 		this.game = vnode.attrs.game;
 
-		let panelTypes = this.app.gameManager.panelManager.toArray().map(panel => {
+		let panelTypes = Array.from(this.app.games.panels.values()).map(panel => {
 			return m(`.type#panel-type-${panel.name}`, {onclick: () => {
 				let prevType = this.panelType;
 

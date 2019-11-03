@@ -14,16 +14,16 @@ export default class WindowView {
 	}
 
 	view(vnode) {
-		let minimizeButton = m(".button", {onclick: () => this.app.windowHandler.minimize()}, "_");
+		let minimizeButton = m(".button", {onclick: () => this.app.ui.window.minimize()}, "_");
 		let maximizeButton = m(".button", {onclick: event => {
-			let isMaximized = this.app.windowHandler.isMaximized();
+			let isMaximized = this.app.ui.window.isMaximized();
 
-			if(isMaximized) this.app.windowHandler.unmaximize();
-			else this.app.windowHandler.maximize();
+			if(isMaximized) this.app.ui.window.unmaximize();
+			else this.app.ui.window.maximize();
 
 			m.render(event.currentTarget, isMaximized ? unmaximizeSvg : maximizeSvg);
 		}}, maximizeSvg);
-		let closeButton = m(".button", {onclick: () => this.app.windowHandler.close()}, closeSvg);
+		let closeButton = m(".button", {onclick: () => this.app.ui.window.close()}, closeSvg);
 
 		return (
 			<div class="window">
