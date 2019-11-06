@@ -9,30 +9,40 @@ export default class GameListComponent {
 		this.selected;
 	}
 
+	gameClickListener(game, vnode) {
+		vnode.attrs.parent.game = game;
+		
+		if(document.getElementById(this.selected)) document.getElementById(this.selected).classList.remove("selected");
+		document.getElementById(game.id).classList.add("selected");
+
+		this.selected = game.id;
+
+		m.redraw();
+	}
+
+	gameToItem(game, vnode) {
+		if(this.selected === undefined) this.selected = game.id;
+
+		const playable = game.actions.length > 0;
+
+		return m(`.game-item${game.id === this.selected ? ".selected" : ""}#${game.id}`, {onclick: () => this.gameClickListener(game, vnode)}, [
+			m(`.icon ${playable ? "playable" : ""}`, {style: game.data.icon ? {backgroundImage: `url(${game.data.icon})`} : {}, onclick: () => playable ? this.app.games.launch(game) : {}}, m(".play-icon", playSvg)),
+			m(".title", game.data.name)
+		]);
+	}
+
+	listToggleClickListener() {
+		document.getElementById("game-list").classList.toggle("opened");
+		document.getElementById("frame").classList.toggle("sidebarOpened");
+	}
+
 	view(vnode) {
-		const games = Array.from(this.app.games.values()).sort((a, b) => a.data.name.localeCompare(b.data.name)).map((game, index) => {
-			if(this.selected === undefined) this.selected = game.id;
+		const games = this.games || Array.from(this.app.games.values()).sort((a, b) => a.data.name.localeCompare(b.data.name));
+		const gameElements = games.map(name => this.gameToItem(name, vnode));
 
-			const playable = game.actions.length > 0;
-
-			return m(`.game-item${game.id === this.selected ? ".selected" : ""}#${game.id}`, {onclick: () => {
-				vnode.attrs.parent.game = game;
-
-				document.getElementById(this.selected).classList.remove("selected");
-				document.getElementById(game.id).classList.add("selected");
-
-				this.selected = game.id;
-
-				m.redraw();
-			}}, [
-				m(`.icon ${playable ? "playable" : ""}`, {style: game.data.icon ? {backgroundImage: `url(${game.data.icon})`} : {}, onclick: () => playable ? this.app.games.launch(game) : {}}, m(".play-icon", playSvg)),
-				m(".title", game.data.name)
-			]);
-		});
-
-		return m(".game-list.opened#game-list", [m(".container", games), m(".list-toggle", {onclick: () => {
-			document.getElementById("game-list").classList.toggle("opened");
-			document.getElementById("frame").classList.toggle("sidebarOpened");
-		}}, arrowSvg)]);
+		return m(".game-list.opened#game-list", [
+			m(".container", gameElements), 
+			m(".list-toggle", {onclick: this.listToggleClickListener.bind(this)}, arrowSvg)
+		]);
 	}
 }

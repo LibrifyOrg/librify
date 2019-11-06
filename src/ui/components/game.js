@@ -9,26 +9,34 @@ export default class GameComponent {
 		this.panelOpened = false;
 	}
 
+	panelClickListener(panel) {
+		let prevType = this.panelType;
+
+		this.panelType = panel.name;
+		
+		if(prevType) document.getElementById(`panel-button-${prevType}`).classList.toggle("selected");
+		
+		if(prevType === this.panelType || prevType === undefined) this.toggle();
+		else {
+			document.getElementById(`panel-button-${this.panelType}`).classList.toggle("selected");
+			m.redraw();
+		}
+	}
+
+	panelToButton(panel) {
+		return m(`.button#panel-button-${panel.name}`, {onclick: () => this.panelClickListener(panel)}, [
+			m("img", {src: panel.icon})
+		]);
+	}
+
 	view(vnode) {
 		this.game = vnode.attrs.game;
 
-		let panelTypes = Array.from(this.app.games.panels.values()).map(panel => {
-			return m(`.type#panel-type-${panel.name}`, {onclick: () => {
-				let prevType = this.panelType;
+		if(this.game !== this.previousGame) this.app.logger.debug(`selected game ${this.game.data.name}`);
 
-				this.panelType = panel.name;
-				
-				if(prevType) document.getElementById(`panel-type-${prevType}`).classList.toggle("selected");
-				
-				if(prevType === this.panelType || prevType === undefined) this.toggle();
-				else {
-					document.getElementById(`panel-type-${this.panelType}`).classList.toggle("selected");
-					m.redraw();
-				}
-			}}, [
-				m("img", {src: panel.icon})
-			]);
-		});
+		this.previousGame = this.game;
+
+		let panelButtons = Array.from(this.app.games.panels.values()).map(this.panelToButton.bind(this));
 
 		const secondaryAction = this.game.actions.find(action => !action.primary);
 
@@ -49,10 +57,10 @@ export default class GameComponent {
 						</div> : ""}
 					</div>
 				</div>
-				<div class="panel-types" id="panel-types">
-					{panelTypes}
+				<div class="panel-buttons" id="panel-buttons">
+					{panelButtons}
 				</div>
-				{m(".darken#darken", {onclick: () => this.panelOpened ? this.close() : undefined})}
+				<div id="darken" class="darken" onclick={() => this.panelOpened ? this.close() : undefined}></div>
 				<GamePanelComponent app={this.app} game={this.game} type={this.panelType}></GamePanelComponent>
 			</div>
 		);
@@ -76,10 +84,12 @@ export default class GameComponent {
 		if(this.panelOpened) return;
 
 		this.panelOpened = true;
-		document.getElementById(`panel-type-${this.panelType}`).classList.toggle("selected");
+		document.getElementById(`panel-button-${this.panelType}`).classList.add("selected");
 		document.getElementById("panel").classList.add("opened");
-		document.getElementById("panel-types").classList.add("opened");
+		document.getElementById("panel-buttons").classList.add("opened");
 		document.getElementById("darken").classList.add("opened");
+
+		this.app.logger.debug(`opened panel ${this.panelType}`);
 
 		m.redraw();
 	}
@@ -88,13 +98,15 @@ export default class GameComponent {
 		if(!this.panelOpened) return;
 
 		this.panelOpened = false;
+		document.getElementById(`panel-button-${this.panelType}`).classList.remove("selected");
 		document.getElementById("panel").classList.remove("opened");
-		document.getElementById("panel-types").classList.remove("opened");
+		document.getElementById("panel-buttons").classList.remove("opened");
 		document.getElementById("darken").classList.remove("opened");
+
+		this.app.logger.debug(`closed panel ${this.panelType}`);
 
 		setTimeout(() => {
 			this.panelType = undefined;
-			m.redraw();
 		}, 1000);
 	}
 }
