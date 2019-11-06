@@ -15,8 +15,11 @@ app.on("ready", () => {
 
 	window.setMenu(null);
 	window.loadFile(path.join(__dirname, "dist/index.html"));
-	window.webContents.openDevTools();
 	window.once("ready-to-show", () => {
 		window.show();
 	});
-})
+
+	globalShortcut.register("F3", () => {
+		window.webContents.toggleDevTools();
+	})
+});
