@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const EncodingPlugin = require('webpack-encoding-plugin');
 
 module.exports = {
 	entry: ["babel-polyfill", "./resources/scss/stylesheet.scss", "./src/index.js"],
@@ -45,6 +46,9 @@ module.exports = {
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: "./src/index.html"
+		}),
+		new EncodingPlugin({
+			encoding: 'utf-16'
 		})
 	],
 	externals: /^(plugins)$/i,
