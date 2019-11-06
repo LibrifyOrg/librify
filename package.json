@@ -49,8 +49,11 @@
 		"lowdb": "^1.0.0",
 		"mithril": "^2.0.0-rc.8",
 		"pretty-ms": "^5.0.0",
+		"rimraf": "^3.0.0",
+		"semver": "^6.3.0",
 		"shortid": "^2.2.14",
-		"string-similarity": "^3.0.0"
+		"string-similarity": "^3.0.0",
+		"tar": "^5.0.5",
 		"winston": "^3.2.1"
 	}
 }

@@ -1,8 +1,31 @@
 import fs from "fs";
 import path from "path";
 import util from "util";
+import http from "http";
+import tar from "tar";
+import rimraf from "rimraf";
+import semver from "semver";
 import Plugin from "@/plugin/model";
 import native from "@/native";
+
+function request(url, options) {
+	return new Promise((resolve, reject) => {
+		let req = http.request(url, options, res => {
+			resolve(res);
+		});
+		req.on("error", err => reject(err));
+		req.end();
+	});
+}
+
+function waitForData(stream) {
+	return new Promise((resolve, reject) => {
+		let buffer = Buffer.from("");
+
+		stream.on("data", chunk => buffer = Buffer.concat([buffer, chunk]));
+		stream.on("end", () => resolve(buffer.toString()));
+	});
+}
 
 export default class PluginManager extends Map {
 	constructor(app) {
@@ -10,6 +33,69 @@ export default class PluginManager extends Map {
 
 		this.app = app;
 		this.folder = path.resolve("plugins/");
+	}
+
+	async install(name) {
+		this.app.logger.timing(`PluginManager.install.${name}`);
+
+		let pluginFolder = `${this.folder}/${name}/`;
+
+		if(fs.existsSync(pluginFolder) && (await util.promisify(fs.stat)(pluginFolder)).isDirectory()) {
+			await util.promisify(rimraf)(pluginFolder);
+		}
+
+		let res = await request(`http://localhost/registry/download/${name}`);
+
+		if(res.statusCode !== 200) return this.app.logger.error(`An error occurred trying to download the plugin ${name}, code: ${res.statusCode}`);
+
+		await util.promisify(fs.mkdir)(pluginFolder);
+
+		let extractStream = tar.extract({cwd: pluginFolder});
+
+		extractStream.on("finish", async () => {
+			this.app.logger.debug(`installed plugin ${name} in ${this.app.logger.timing(`PluginManager.install.${name}`)}`);
+
+			await this.load(name);
+			await this.enable(name);
+		});
+
+		res.pipe(extractStream);
+	}
+
+	async update(name) {
+		this.app.logger.timing(`PluginManager.update.${name}`);
+
+		let plugin = this.get(name);
+
+		if(!plugin) return;
+
+		let res = await request(`http://localhost/registry/version/${name}`);
+
+		if(res.statusCode !== 200) return this.app.logger.error(`An error occurred trying to checking the latest version for the plugin ${name}, code: ${res.statusCode}`);
+
+		let version = await waitForData(res);
+
+		if(semver.lte(version, plugin.version)) return;
+
+		await this.disable(name);
+		await this.install(name);
+
+		this.app.logger.debug(`updated plugin ${name} in ${this.app.logger.timing(`PluginManager.update.${name}`)}`);
+	}
+
+	async uninstall(name) {
+		this.app.logger.timing(`PluginManager.uninstall.${name}`);
+
+		let plugin = this.get(name);
+
+		if(!plugin) return;
+
+		let pluginFolder = `${this.folder}/${name}/`;
+
+		await this.disable(name);
+		await util.promisify(rimraf)(pluginFolder);
+
+		this.app.logger.debug(`uninstalled plugin ${name} in ${this.app.logger.timing(`PluginManager.uninstall.${name}`)}`);
 	}
 
 	async loadAll() {
