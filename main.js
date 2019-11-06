@@ -1,6 +1,12 @@
 const path = require("path");
 const electron = require("electron");
-const {app, BrowserWindow} = electron;
+const {app, BrowserWindow, globalShortcut} = electron;
+
+try {
+	require('electron-reload')(path.join(__dirname, "dist/"), {
+		electron: path.join(__dirname, 'node_modules', '.bin', 'electron')
+	});
+} catch {}
 
 app.on("ready", () => {
 	const window = new BrowserWindow({

@@ -4,7 +4,7 @@
 	"description": "Unify all of your games in one library",
 	"main": "main.js",
 	"scripts": {
-		"dev": "node build/build.dev && npm run start",
+		"dev": "node build/build.dev",
 		"prod": "node build/build",
 		"start": "electron main.js"
 	},
@@ -31,6 +31,7 @@
 		"css-loader": "^3.0.0",
 		"electron": "^5.0.10",
 		"electron-packager": "^14.0.1",
+		"electron-reload": "^1.5.0",
 		"extract-loader": "^3.1.0",
 		"file-loader": "^4.0.0",
 		"html-webpack-plugin": "^3.2.0",
