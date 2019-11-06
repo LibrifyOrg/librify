@@ -4,6 +4,7 @@ export default class Plugin {
 		this.deprecated = data.deprecated;
 		this.author = data.author;
 		this.indexFunction = data.indexFunction;
+		this.version = data.version;
 		this.data = data;
 
 		if(this.deprecated) console.warn(`The plugin ${this.name} is deprecated and shouldn't be used.`);
