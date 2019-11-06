@@ -13,6 +13,8 @@ export default class PluginManager extends Map {
 	}
 
 	async loadAll() {
+		this.app.logger.timing(`PluginManager.loadAll`);
+
 		if(!(await util.promisify(fs.stat)(this.folder)).isDirectory()) {
 			fs.mkdir(folder);
 		}
@@ -26,20 +28,24 @@ export default class PluginManager extends Map {
 
 			await this.load(path);
 		}
+
+		this.app.logger.debug(`loaded ${this.size} plugin(s) in ${this.app.logger.timing(`PluginManager.loadAll`)}`);
 	}
 
 	async load(path) {
+		this.app.logger.timing(`PluginManager.load.${path}`);
+
 		let config;
 		
 		try {
 			config = native.require(`${this.folder}/${path}/librimod.json`);
 		}
 		catch(e) {
-			return console.error(`Couldn't load the config file for the plugin in ${path} (${e.message}).`);
+			return this.app.logger.error(`couldn't load the config file for the plugin in ${path} (${e.message}).`);
 		}
 
 		if(config.name === undefined || config.version === undefined || config.index === undefined || config.author === undefined) {
-			return console.error(`The loaded config is missing required settings.`);
+			return this.app.logger.error(`the config for the plugin in ${path} is missing required options`);
 		}
 
 		let indexFunction;
@@ -48,14 +54,13 @@ export default class PluginManager extends Map {
 			indexFunction = native.require(`${this.folder}/${path}/${config.index}`);
 		}
 		catch(e) {
-			console.error(e);
-			return console.error(`Couldn't find the main file for the plugin in ${path} (${e.message}).`);
+			return this.app.logger.error(`couldn't find the main file for the plugin ${config.name} (${e.message}).`);
 		}
 
 		const plugin = new Plugin(Object.assign(config, {indexFunction}));
 		this.set(plugin.name, plugin);
 
-		await plugin.indexFunction(this.app);
+		this.app.logger.debug(`loaded the plugin ${plugin.name} in ${this.app.logger.timing(`PluginManager.load.${path}`)}`);
 
 		return plugin;
 	}

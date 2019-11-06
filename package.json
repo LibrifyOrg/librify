@@ -48,7 +48,9 @@
 		"igdb-api-node": "^4.0.3",
 		"lowdb": "^1.0.0",
 		"mithril": "^2.0.0-rc.8",
+		"pretty-ms": "^5.0.0",
 		"shortid": "^2.2.14",
 		"string-similarity": "^3.0.0"
+		"winston": "^3.2.1"
 	}
 }

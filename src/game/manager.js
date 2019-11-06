@@ -36,6 +36,8 @@ export default class GameManager extends Map {
 	}
 
 	async initialize() {
+		this.app.logger.timing("GameManager.initialize");
+
 		this.config = await this.app.configs.get("games.json");
 		this.config.defaults({games: []}).write();
 		this.config.get("games").value().forEach(gameData => {
@@ -43,6 +45,8 @@ export default class GameManager extends Map {
 			
 			this.set(game.id, game);
 		});
+
+		this.app.logger.debug(`loaded ${this.size} game(s) in ${this.app.logger.timing("GameManager.initialize")}`);
 	}
 
 	set(id, game) {
@@ -52,11 +56,16 @@ export default class GameManager extends Map {
 	}
 
 	async findAll() {
+		this.app.logger.timing("GameManager.findAll");
+		let sizeBefore = this.size;
+
 		const launchers = Array.from(this.launchers.keys());
 
 		for(let name of launchers) {
 			await this.find(name)
 		}
+
+		this.app.logger.debug(`found ${this.size-sizeBefore} new game(s) in ${this.app.logger.timing("GameManager.findAll")}`);
 	}
 
 	async find(launcherName) {
@@ -72,9 +81,13 @@ export default class GameManager extends Map {
 
 			this.set(newGame.id, newGame);
 		}
+
+		this.app.logger.debug(`${launcherName} found ${this.size-sizeBefore} new game(s) out of ${games.length} in ${this.app.logger.timing("GameManager.find")}`);
 	}
 
 	async launch(game, index) {
+		this.app.logger.debug(`launching ${game} (${index})`).timing("GameManager.launch");
+
 		let action;
 
 		if(index === undefined) action = game.actions.find(action => action.primary);
@@ -83,6 +96,8 @@ export default class GameManager extends Map {
 		if(action === undefined) return;
 
 		this.actionTypes.get(action.type)(game, action);
+
+		this.app.logger.debug(`launched ${game} in ${this.app.logger.timing("GameManager.launch")}`);
 	}
 
 	create({name}) {
@@ -98,7 +113,11 @@ export default class GameManager extends Map {
 		m.redraw();
 	}
 
-	save() {
-		this.config.set("games", Array.from(this.values()).map(game => game.toObject())).write();
+	async save() {
+		this.app.logger.timing("GameManager.save");
+
+		await this.config.set("games", Array.from(this.values()).map(game => game.toObject())).write();
+
+		this.app.logger.debug(`saved ${this.size} game(s) in ${this.app.logger.timing("GameManager.launch")}`);
 	}
 }
