@@ -38,10 +38,31 @@ export default class WindowView {
 		this.app.logger.debug(`closed window using button`);
 	}
 
+	listOnlyClickListener() {
+		let window = document.getElementsByClassName("window")[0];
+		let gameList = document.getElementById("game-list");
+		window.classList.toggle("list-only");
 
-			m.render(event.currentTarget, isMaximized ? unmaximizeSvg : maximizeSvg);
-		}}, maximizeSvg);
-		let closeButton = m(".button", {onclick: () => this.app.ui.window.close()}, closeSvg);
+		if(window.classList.contains("list-only")) {
+			this.app.ui.window.setSize(350, this.app.ui.window.getSize()[1]);
+
+			this.app.logger.debug(`entered list-only mode using button`);
+		}
+		else {
+			this.app.ui.window.setSize(1800, 900);
+
+			if(gameList) {
+				gameList.classList.toggle("notransition");
+
+				setTimeout(() => gameList.classList.toggle("notransition"), 1000);
+			}
+
+			this.app.logger.debug(`left list-only mode using button`);
+		}
+
+		m.route.set("/games");
+	}
+
 	view(vnode) {
 		let minimizeButton = m(".button", {onclick: this.minimizeClickListener.bind(this)}, "_");
 		let maximizeButton = m(".button#maximize", {onclick: this.maximizeClickListener.bind(this)}, maximizeSvg);
@@ -61,6 +82,7 @@ export default class WindowView {
 					</div>
 					<div class="window-buttons">
 						<div class="drag"></div>
+						{listOnlyButtonButton}
 						{minimizeButton}
 						{maximizeButton}
 						{closeButton}

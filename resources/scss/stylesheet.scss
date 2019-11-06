@@ -612,3 +612,51 @@ body {
 		}
 	}
 }
+
+.window.list-only {
+	.frame {
+		.title {
+			flex-grow: 1;
+		}
+
+		.buttons {
+			padding-right: 0;
+		}
+
+		.window-buttons {
+			width: auto;
+
+			.drag {
+				width: 0;
+			}
+
+			#maximize {
+				display: none;
+			}
+		}
+	}
+
+	#body {
+		.game-list {
+			width: 100%;
+			min-width: 350px;
+			transition: none;
+
+			&.opened {
+				width: 100%;
+			}
+
+			.list-toggle {
+				display: none;
+			}
+		}
+
+		.game {
+			display: none;
+		}
+	}
+}
+
+.notransition {
+	transition: none !important;
+}
