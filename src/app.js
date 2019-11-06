@@ -19,7 +19,7 @@ export default class Application extends EventEmitter {
 	}
 
 	async start() {
-		this.logger.info("starting application").timing("Application.start");
+		this.logger.debug("starting application").timing("Application.start");
 
 		await this.games.initialize();
 		await this.plugins.loadAll();
@@ -32,7 +32,7 @@ export default class Application extends EventEmitter {
 	}
 
 	async stop() {
-		this.logger.info("stopping application").timing("Application.start");
+		this.logger.debug("stopping application").timing("Application.start");
 
 		this.emit("stop");
 		await this.games.save();
