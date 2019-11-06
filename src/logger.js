@@ -39,10 +39,6 @@ export default class Logger {
 			]
 		});
 
-		if(this.isProduction()) {
-			return logger;
-		}
-
 		logger.timing = tag => {
 			let newTime = new Date().getTime();
 			let oldTime = this.tags.get(tag) || new Date().getTime();
@@ -50,6 +46,10 @@ export default class Logger {
 			this.tags.set(tag, newTime);
 
 			return prettyMilliseconds(newTime - oldTime);
+		}
+
+		if(this.isProduction()) {
+			return logger;
 		}
 
 		logger.add(new winston.transports.Console({
