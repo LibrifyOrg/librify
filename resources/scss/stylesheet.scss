@@ -52,7 +52,11 @@ body {
 		}
 
 		.buttons {
-			width: 100px;
+			width: 104px;
+
+			.container {
+				width: 104px;
+			}
 		}
 	}
 
@@ -99,11 +103,15 @@ body {
 
 	.buttons {
 		width: 0;
-		display: flex;
-		justify-content: flex-end;
-		padding-right: 4px;
-		overflow: hidden;
 		transition: 1s width;
+
+		.container {
+			width: 0;
+			display: flex;
+			justify-content: flex-end;
+			overflow: hidden;
+			transition: 1s width;
+		}
 
 		.button {
 			width: 15px;
@@ -200,6 +208,36 @@ body {
 		overflow: hidden;
 		transition: width 1s;
 		flex-grow: 0;
+
+		.menu {
+			height: 0;
+			transition: height 0.5s;
+			overflow: hidden;
+			flex-shrink: 0;
+
+			div {
+				width: 100%;
+			}
+
+			.searchbar {
+				margin: 8px;
+				width: calc(100% - 16px);
+				padding: 6px 12px;
+				background: rgb(214, 214, 215);
+				border: 1px solid rgb(40, 44, 47);
+				border-radius: 4px;
+				transition: .3s border;
+				color: rgb(32, 33, 36);
+				font-family: "Muli";
+				font-size: 15px;
+
+				&:focus, &:hover {
+					background: lighten(rgb(214, 214, 215), 10%);
+					border: 1px solid lighten(rgb(214, 214, 215), 10%);
+					outline: none;
+				}
+			}
+		}
 
 		.container {
 			width: 100%;
@@ -536,7 +574,7 @@ body {
 			}
 		}
 
-		.panel-types {
+		.panel-buttons {
 			display: flex;
 			justify-content: flex-start;
 			flex-direction: column-reverse;
@@ -551,7 +589,7 @@ body {
 			background: rgb(40, 44, 47);
 			transition: all 1s;
 
-			.type {
+			.button {
 				width: 16px;
 				height: 16px;
 				padding: 10px;
