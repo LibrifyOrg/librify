@@ -39,7 +39,7 @@ export default class GameManager extends Map {
 		this.app.logger.timing("GameManager.initialize");
 
 		this.config = await this.app.configs.get("games.json");
-		this.config.defaults({games: []}).write();
+		await this.config.defaults({games: []}).write();
 		this.config.get("games").value().forEach(gameData => {
 			const game = new Game(this.app, gameData);
 			
@@ -73,16 +73,16 @@ export default class GameManager extends Map {
 		let sizeBefore = this.size;
 
 		const launcher = this.launchers.get(launcherName);
-		const newGames = await launcher.fetchNewGames(Array.from(this.values()));
+		const games = await launcher.fetchNewGames(Array.from(this.values()));
 
-		for(let newGame of newGames) {
-			if(Array.from(this.values()).find(game => game.data.name === newGame.data.name)) {
+		for(let game of games) {
+			if(Array.from(this.values()).find(oldGame => oldGame.data.name === game.data.name)) {
 				continue;
 			}
 
-			newGame.data.origin = name;
+			game.data.origin = launcherName;
 
-			this.set(newGame.id, newGame);
+			this.set(game.id, game);
 		}
 
 		this.app.logger.debug(`${launcherName} found ${this.size-sizeBefore} new game(s) out of ${games.length} in ${this.app.logger.timing("GameManager.find")}`);
