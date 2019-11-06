@@ -134,20 +134,70 @@ export default class PluginManager extends Map {
 			return this.app.logger.error(`the config for the plugin in ${path} is missing required options`);
 		}
 
-		let indexFunction;
+		let entry;
 		
 		try {
-			indexFunction = native.require(`${this.folder}/${path}/${config.index}`);
+			entry = native.require(`${this.folder}/${path}/${config.index}`);
 		}
 		catch(e) {
 			return this.app.logger.error(`couldn't find the main file for the plugin ${config.name} (${e.message}).`);
 		}
 
-		const plugin = new Plugin(Object.assign(config, {indexFunction}));
+		const plugin = new Plugin(config);
+
+		try {
+			plugin.reference = await entry();
+		}
+		catch(e) {
+			return this.app.logger.error(`An error occurred when loading the entry function for the plugin ${plugin.name} (${e.message}).`);
+		}
+		
 		this.set(plugin.name, plugin);
 
 		this.app.logger.debug(`loaded the plugin ${plugin.name} in ${this.app.logger.timing(`PluginManager.load.${path}`)}`);
 
 		return plugin;
+	}
+
+	enableAll() {
+		return this.executeAll("enable");
+	}
+
+	enable(name) {
+		return this.execute("enable", name);
+	}
+
+	disableAll() {
+		return this.executeAll("disable");
+	}
+
+	disable(name) {
+		return this.execute("disable", name);
+	}
+
+	async executeAll(event) {
+		this.app.logger.timing(`PluginManager.all${event}`);
+
+		for(let name of Array.from(this.keys())) {
+			await this.execute(event, name);
+		}
+
+		this.app.logger.debug(`${event.endsWith("e") ? event + "d" : event + "ed"} ${this.size} plugin(s) in ${this.app.logger.timing(`PluginManager.${event}`)}`);
+	}
+
+	async execute(event, name) {
+		this.app.logger.timing(`PluginManager.${event}.${name}`);
+
+		let plugin = this.get(name);
+
+		if(typeof plugin !== "object") return;
+
+		let eventFunction = plugin.reference[event];
+
+		if(typeof eventFunction !== "function") return;
+
+		await eventFunction.bind(plugin.reference)(this.app);
+
+		this.app.logger.debug(`${event.endsWith("e") ? event + "d" : event + "ed"} plugin ${name} in ${this.app.logger.timing(`PluginManager.${event}.${name}`)}`);
 	}
 }

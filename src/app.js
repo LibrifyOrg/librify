@@ -4,7 +4,7 @@ import UIHandler from "@/ui/handler";
 import GameManager from "@/game/manager";
 import ConfigManager from "@/config/manager";
 import PluginManager from "@/plugin/manager";
-import { EventEmitter } from "events";
+import {EventEmitter} from "events";
 
 export default class Application extends EventEmitter {
 	constructor() {
@@ -23,6 +23,7 @@ export default class Application extends EventEmitter {
 
 		await this.games.initialize();
 		await this.plugins.loadAll();
+		await this.plugins.enableAll();
 		await this.games.findAll();
 		this.ui.startRendering();
 		this.emit("start");
