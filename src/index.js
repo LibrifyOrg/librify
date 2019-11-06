@@ -6,9 +6,13 @@ app.start();
 
 window.addEventListener("beforeunload", event => {
 	app.stop()
-	.then(() => remote.getCurrentWindow().destroy());
+	.then(() => {
+		if(!remote.app.isPackaged) {
+			return;
+		}
 
-	event.returnValue = true;
+		remote.getCurrentWindow().destroy();
+	});
 });
 
 window.app = app;
