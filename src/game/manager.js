@@ -69,6 +69,9 @@ export default class GameManager extends Map {
 	}
 
 	async find(launcherName) {
+		this.app.logger.timing("GameManager.find");
+		let sizeBefore = this.size;
+
 		const launcher = this.launchers.get(launcherName);
 		const newGames = await launcher.fetchNewGames(Array.from(this.values()));
 
