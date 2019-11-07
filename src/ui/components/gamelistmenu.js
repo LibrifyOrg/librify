@@ -1,6 +1,6 @@
 import m from "mithril";
 
-export default class GameListComponent {
+export default class GameListMenuComponent {
 	oninit(vnode) {
 		this.app = vnode.attrs.app;
 		this.parent = vnode.attrs.parent;
@@ -11,7 +11,7 @@ export default class GameListComponent {
 		this.filters.set("steam", game => this.values.get("steam") ? game.data.origin === "steam" : true);
 	}
 
-	viewSearch(vnode) {
+	viewSearch() {
 		return (
 			<div>
 				<input class="searchbar" id="menu-searchbar" type="text" value={this.values.get("search") || ""} onkeyup={() => {
@@ -22,17 +22,7 @@ export default class GameListComponent {
 		)
 	}
 
-	updateParent() {
-		let games = Array.from(this.app.games.values()).sort((a, b) => a.data.name.localeCompare(b.data.name));
-
-		for(let filter of Array.from(this.filters.values())) {
-			games = games.filter(filter);
-		}
-
-		this.parent.games = games;
-	}
-
-	viewFilter(vnode) {
+	viewFilter() {
 		return (
 			<div>
 				<input class="checkbox" id="menu-steam" type="checkbox" value={this.values.get("steam") || ""} onchange={() => {
@@ -51,6 +41,16 @@ export default class GameListComponent {
 			this.close = false;
 			vnode.dom.style.height = "0";
 		}
+	}
+
+	updateParent() {
+		let games = Array.from(this.app.games.values()).sort((a, b) => a.data.name.localeCompare(b.data.name));
+
+		for(let filter of Array.from(this.filters.values())) {
+			games = games.filter(filter);
+		}
+
+		this.parent.games = games;
 	}
 
 	view(vnode) {
