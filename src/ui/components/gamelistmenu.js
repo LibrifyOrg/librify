@@ -68,12 +68,17 @@ export default class GameListMenuComponent {
 				break;
 		}
 
-		if(this.menuType !== vnode.attrs.menuType) {
+		if(this.menuType !== vnode.attrs.menuType && !this.closing) {
 			this.menuType = vnode.attrs.menuType;
 			
 			if(this.menuType === undefined) {
 				this.close = true;
-				setTimeout(() => {this.menu = menu; m.redraw()}, 500);
+				this.closing = true;
+
+				setTimeout(() => {
+					this.closing = false;
+					this.menu = menu; m.redraw()
+				}, 500);
 			}
 			else this.menu = menu;
 		}
