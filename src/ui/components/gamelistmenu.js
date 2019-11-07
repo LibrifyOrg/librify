@@ -14,7 +14,7 @@ export default class GameListMenuComponent {
 	viewSearch() {
 		return (
 			<div>
-				<input class="searchbar" id="menu-searchbar" type="text" value={this.values.get("search") || ""} onkeyup={() => {
+				<input class="searchbar" id="menu-searchbar" type="text" placeholder="Search..." value={this.values.get("search") || ""} onkeyup={() => {
 					this.values.set("search", document.getElementById("menu-searchbar").value.toLowerCase());
 					this.updateParent();
 				}}></input>
