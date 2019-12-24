@@ -15,10 +15,6 @@ export default class Logger {
 		this.tags = new Map();
 	}
 
-	isProduction() {
-		return this.app.electron.app.isPackaged;
-	}
-
 	/**
 	 * Creates a winston.Logger class that can be used to log to your hearts content. It also adds 
 	 * an extra method to the logger .timing(tag), with which you can time your code. Use the tag 
@@ -44,7 +40,7 @@ export default class Logger {
 			transports: [
 				new winston.transports.File({
 					format: defaultFormat,
-					level: this.isProduction() ? "info" : "debug",
+					level: this.app.electron.app.isPackaged ? "info" : "debug",
 					filename: path.join(process.cwd(), "logs/info.log"),
 				}),
 				new winston.transports.File({
@@ -70,7 +66,7 @@ export default class Logger {
 			return prettyMilliseconds(newTime - oldTime);
 		}
 
-		if(this.isProduction()) {
+		if(this.app.electron.app.isPackaged) {
 			return logger;
 		}
 
