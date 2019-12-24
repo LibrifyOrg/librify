@@ -105,8 +105,9 @@ export default class GameManager extends Map {
 
 	create({name}) {
 		let id = shortid();
+		let addedOn = new Date().getTime();
 
-		return new Game(this.app, {name, id, sources});
+		return new Game(this.app, {name, id, addedOn});
 	}
 
 	delete(id) {
