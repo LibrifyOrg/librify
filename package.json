@@ -6,7 +6,8 @@
 	"scripts": {
 		"dev": "node build/build.dev",
 		"prod": "node build/build",
-		"start": "electron main.js"
+		"start": "electron main.js",
+		"docs": "esdoc"
 	},
 	"repository": {
 		"type": "git",
@@ -32,6 +33,9 @@
 		"electron": "^5.0.10",
 		"electron-packager": "^14.0.1",
 		"electron-reload": "^1.5.0",
+		"esdoc": "^1.1.0",
+		"esdoc-jsx-plugin": "^1.0.0",
+		"esdoc-standard-plugin": "^1.0.0",
 		"extract-loader": "^3.1.0",
 		"file-loader": "^4.0.0",
 		"html-webpack-plugin": "^3.2.0",
