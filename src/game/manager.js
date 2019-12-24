@@ -104,7 +104,6 @@ export default class GameManager extends Map {
 	}
 
 	create({name}) {
-		let sources = Array.from(this.sources.keys()).map(name => {return {name, populated: false}});
 		let id = shortid();
 
 		return new Game(this.app, {name, id, sources});

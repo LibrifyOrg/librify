@@ -1,12 +1,13 @@
 import SourceModel from "@/game/source/model";
 
 export default class SourceManager extends Map {
-	constructor() {
+	constructor(app) {
 		super();
+
+		this.app = app; 
+		this.order = [];
 	}
 
-	register(name, sourceClass) {
-		this.set(name, sourceClass);
 	/**
 	 * Registers a new source class, so it can be instantiated for every game. A few options can 
 	 * be supplied in the source parameter. If options are supplied as an object the source key 
@@ -17,6 +18,13 @@ export default class SourceManager extends Map {
 	 * @param {String} name The name for the source
 	 * @param {Object} source The source object, can also be the class itself if no options are set
 	 */
+	register(name, source) {
+		if(source instanceof SourceModel) {
+			source = {model};
+		}
+
+		this.set(name, source);
+		this.addToOrder(name);
 	}
 
 	/**
@@ -27,12 +35,35 @@ export default class SourceManager extends Map {
 		return SourceModel;
 	}
 
-	create(config) {
-		if(!config.name || !this.get(config.name)) return;
 	/**
 	 * @interal
 	 */
+	addToOrder(name) {
+		for(let sourceName of this.order) {
+			source = this.get(sourceName);
 
-		return new (this.get(config.name))(config);
+			if(!source.dependencies || !source.dependencies.includes(name)) continue;
+
+			return this.order.splice(this.order.indexOf(sourceName), 0, name);
+		}
+
+		this.order.push(name);
+	}
+
+	removeFromOrder(name) {
+		this.order.splice(this.order.indexOf(name), 1);
+	}
+
+	unregister(name) {
+		if(!this.has(name)) return;
+
+		this.delete(name);
+		this.removeFromOrder(name);
+	}
+
+	create(game, sources) {
+		return this.order.map(name => this.get(name).default ? {name} : sources.find(source => source.name === name))
+			.filter(source => source !== undefined)
+			.map(source => new (this.get(source.name).model)(game, source));
 	}
 }
