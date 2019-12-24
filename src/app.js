@@ -54,7 +54,7 @@ export default class Application extends EventEmitter {
 		await this.plugins.enableAll();
 		await this.games.findAll();
 		this.ui.startRendering();
-		this.emit("start");
+		this.emit("started");
 
 		this.logger.info(`started application in ${this.logger.timing("Application.start")}`);
 	}
