@@ -1,4 +1,6 @@
-export default class Game {
+const protectedKeys = ["id, addedOn"];
+
+export default class GameModel {
 	constructor(app, data) {
 		this.app = app;
 		this.data = Object.assign(...Array.from(app.games.dataTypes.values()).map(dataType => dataType.default()), data);
