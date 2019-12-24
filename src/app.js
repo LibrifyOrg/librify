@@ -68,6 +68,7 @@ export default class Application extends EventEmitter {
 		this.logger.debug("stopping application").timing("Application.start");
 
 		this.emit("stop");
+		await this.plugins.disableAll();
 		await this.games.save();
 
 		this.logger.info(`stopped application in ${this.logger.timing("Application.start")}`);
