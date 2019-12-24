@@ -2,9 +2,16 @@ import winston from "winston";
 import path from "path";
 import prettyMilliseconds from "pretty-ms";
 
+/**
+ * The logger class is only used to return a window.Logger configurized to log less and more for 
+ * production and development mode respectively.
+ */
 export default class Logger {
+	/** @ignore */
 	constructor(app) {
+		/** @ignore */
 		this.app = app;
+		/** @ignore */
 		this.tags = new Map();
 	}
 
@@ -12,6 +19,21 @@ export default class Logger {
 		return this.app.electron.app.isPackaged;
 	}
 
+	/**
+	 * Creates a winston.Logger class that can be used to log to your hearts content. It also adds 
+	 * an extra method to the logger .timing(tag), with which you can time your code. Use the tag 
+	 * parameter you can specify the tag to time. When using that tag again it will return the 
+	 * timing, already prettified.
+	 * @example 
+	 * app.logger.info("test");
+	 * //-> logs "test"
+	 * @example
+	 * app.logger.timing("test");
+	 * // code
+	 * app.logger.info(`took ${app.logger.timing("test")}`);
+	 * //-> logs "took 0ms"
+	 * @return {winston.Logger} The logger created by winston
+	 */
 	create() {
 		const defaultFormat = winston.format.combine(
 			winston.format.timestamp(),
