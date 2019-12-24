@@ -20,19 +20,19 @@ export default class GameManager extends Map {
 		super();
 
 		this.app = app;
-		this.sources = new SourceManager(this);
-		this.launchers = new LauncherManager(this);
-		this.panels = new PanelManager(this);
-		this.actionTypes = new LaunchActionTypeManager(this);
-		this.dataTypes = new DataTypeManager(this);
-		this.dataTypes.register("sources", new SourceDataType(this));
-		this.dataTypes.register("actions", new ActionDataType(this));
-		this.panels.register("settings", new SettingsPanel(this.app));
-		this.panels.register("storage", new StoragePanel(this.app));
-		this.panels.register("achievements", new AchievementsPanel(this.app));
-		this.panels.register("timeplayed", new TimePlayedPanel(this.app));
-		this.panels.register("ratings", new RatingsPanel(this.app));
-		this.panels.register("info", new InfoPanel(this.app));
+		this.sources = new SourceManager();
+		this.launchers = new LauncherManager();
+		this.panels = new PanelManager();
+		this.actionTypes = new LaunchActionTypeManager();
+		this.dataTypes = new DataTypeManager();
+		this.dataTypes.register("sources", new SourceDataType(this.app));
+		this.dataTypes.register("actions", new ActionDataType());
+		this.panels.register("settings", new SettingsPanel());
+		this.panels.register("storage", new StoragePanel());
+		this.panels.register("achievements", new AchievementsPanel());
+		this.panels.register("timeplayed", new TimePlayedPanel());
+		this.panels.register("ratings", new RatingsPanel());
+		this.panels.register("info", new InfoPanel());
 	}
 
 	async initialize() {
