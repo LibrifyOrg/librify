@@ -63,20 +63,25 @@ export default class PluginManager extends Map {
 
 		let res = await request(`http://localhost/registry/download/${name}`);
 
-		if(res.statusCode !== 200) return this.app.logger.error(`An error occurred trying to download the plugin ${name}, code: ${res.statusCode}`);
+		if(res.statusCode !== 200) {
+			this.app.logger.error(`An error occurred trying to download the plugin ${name}, code: ${res.statusCode}`);
+			
+			return;
+		}
 
 		await util.promisify(fs.mkdir)(pluginFolder);
 
 		let extractStream = tar.extract({cwd: pluginFolder});
-
-		extractStream.on("finish", async () => {
-			this.app.logger.debug(`installed plugin ${name} in ${this.app.logger.timing(`PluginManager.install.${name}`)}`);
-
-			await this.load(name);
-			await this.enable(name);
-		});
-
 		res.pipe(extractStream);
+
+		await new Promise(resolve => extractStream.on("finish", resolve));
+
+		this.app.logger.debug(`installed plugin ${name} in ${this.app.logger.timing(`PluginManager.install.${name}`)}`);
+
+		let plugin = await this.load(name);
+		await this.enable(name);
+
+		return plugin;
 	}
 
 	/**
@@ -94,7 +99,11 @@ export default class PluginManager extends Map {
 
 		let res = await request(`http://localhost/registry/version/${name}`);
 
-		if(res.statusCode !== 200) return this.app.logger.error(`An error occurred trying to checking the latest version for the plugin ${name}, code: ${res.statusCode}`);
+		if(res.statusCode !== 200) {
+			this.app.logger.error(`An error occurred trying to checking the latest version for the plugin ${name}, code: ${res.statusCode}`);
+			
+			return;
+		}
 
 		let version = await waitForData(res);
 
@@ -168,30 +177,30 @@ export default class PluginManager extends Map {
 			config = native.require(`${this.folder}/${path}/librimod.json`);
 		}
 		catch(e) {
-			return this.app.logger.error(`couldn't load the config file for the plugin in ${path} (${e.message}).`);
+			this.app.logger.error(`couldn't load the config file for the plugin in ${path} (${e.message}).`);
+
+			return;
 		}
 
 		if(config.name === undefined || config.version === undefined || config.index === undefined || config.author === undefined) {
-			return this.app.logger.error(`the config for the plugin in ${path} is missing required options`);
+			this.app.logger.error(`the config for the plugin in ${path} is missing required options`);
+
+			return;
 		}
 
-		let entry;
+		let index;
 		
 		try {
-			entry = native.require(`${this.folder}/${path}/${config.index}`);
+			index = native.require(`${this.folder}/${path}/${config.index}`);
 		}
 		catch(e) {
-			return this.app.logger.error(`couldn't find the main file for the plugin ${config.name} (${e.message}).`);
+			this.app.logger.error(`couldn't find the main file for the plugin ${config.name} (${e.message}).`);
+
+			return;
 		}
 
-		const plugin = new Plugin(config);
-
-		try {
-			plugin.reference = await entry();
-		}
-		catch(e) {
-			return this.app.logger.error(`An error occurred when loading the entry function for the plugin ${plugin.name} (${e.message}).`);
-		}
+		const plugin = new Plugin(app, config);
+		plugin.index = index;
 		
 		this.set(plugin.name, plugin);
 
@@ -269,12 +278,14 @@ export default class PluginManager extends Map {
 
 		if(typeof plugin !== "object") return;
 
-		let eventFunction = plugin.reference[event];
+		let eventFunction = plugin.index[event];
 
 		if(typeof eventFunction !== "function") return;
 
-		await eventFunction.bind(plugin.reference)(this.app);
+		await eventFunction.bind(plugin.index)(this.app);
 
 		this.app.logger.debug(`${event.endsWith("e") ? event + "d" : event + "ed"} plugin ${name} in ${this.app.logger.timing(`PluginManager.${event}.${name}`)}`);
+
+		return plugin;
 	}
 }

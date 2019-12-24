@@ -16,7 +16,6 @@ export default class PluginModel {
 		 * @type {String}
 		 * @readonly */
 		this.author = data.author;
-		this.indexFunction = data.indexFunction;
 		/** The path for the index file of the plugin.
 		 * @type {String}
 		 * @readonly */
@@ -29,6 +28,6 @@ export default class PluginModel {
 		 * @type {Object} */
 		this.data = data;
 
-		if(this.deprecated) console.warn(`The plugin ${this.name} is deprecated and shouldn't be used.`);
+		if(this.deprecated) app.logger.warn(`The plugin ${this.name} is deprecated and shouldn't be used.`);
 	}
 }
