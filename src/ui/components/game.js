@@ -32,6 +32,12 @@ export default class GameComponent {
 	view(vnode) {
 		this.game = vnode.attrs.game;
 
+		if(this.game === undefined) {
+			return (
+				<div class="game"></div>
+			)
+		}
+
 		if(this.game !== this.previousGame) this.app.logger.debug(`selected game ${this.game.data.name}`);
 
 		this.previousGame = this.game;

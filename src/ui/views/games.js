@@ -13,7 +13,7 @@ export default class GamesView {
 	}
 
 	onupdate() {
-		if(this.app.games.has(this.game.id)) {
+		if(this.game === undefined || this.app.games.has(this.game.id)) {
 			return;
 		} 
 		
