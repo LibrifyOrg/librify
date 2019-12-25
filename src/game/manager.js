@@ -12,7 +12,6 @@ import RatingsPanel from "@/game/panel/default/ratings";
 import TimePlayedPanel from "@/game/panel/default/timeplayed";
 import StoragePanel from "@/game/panel/default/storage";
 import InfoPanel from "@/game/panel/default/info";
-import SourceDataType from "@/game/source/data";
 import ActionDataType from "./action/data";
 
 export default class GameManager extends Map {
@@ -25,7 +24,6 @@ export default class GameManager extends Map {
 		this.panels = new PanelManager();
 		this.actionTypes = new LaunchActionTypeManager();
 		this.dataTypes = new DataTypeManager();
-		this.dataTypes.register("sources", new SourceDataType(this.app));
 		this.dataTypes.register("actions", new ActionDataType());
 		this.panels.register("settings", new SettingsPanel());
 		this.panels.register("storage", new StoragePanel());
@@ -103,11 +101,38 @@ export default class GameManager extends Map {
 		this.app.logger.debug(`launched ${game} in ${this.app.logger.timing("GameManager.launch")}`);
 	}
 
+	async update(games, sourceNames) {
+		if(games === undefined) games = Array.from(this.values());
+		if(sourceNames === undefined) sourceNames = this.sources.order;
+
+		const sources = sourceNames.map(sourceName => this.sources.get(sourceName));
+
+		for(let source of sources) {
+			const selectedGames = source.default ? games : games.filter(game => game.data.sources.find(context => context.name === source.name));
+
+			if(selectedGames.length === 0) continue;
+
+			const data = selectedGames.map(game => {
+				let context = game.data.sources.find(context => context.name === source.name);
+
+				if(context === undefined) {
+					context = {name: source.name};
+
+					game.data.sources.push(context);
+				}
+
+				return {game, context}
+			});
+			
+			await source.reference.update(data);
+		}
+	}
+
 	create({name}) {
 		let id = shortid();
 		let addedOn = new Date().getTime();
 
-		return new Game(this.app, {name, id, addedOn});
+		return new Game(this.app, {name, id, addedOn, sources: []});
 	}
 
 	delete(id) {

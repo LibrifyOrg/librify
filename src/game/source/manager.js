@@ -20,8 +20,10 @@ export default class SourceManager extends Map {
 	 */
 	register(name, source) {
 		if(source instanceof SourceModel) {
-			source = {model};
+			source = {reference};
 		}
+
+		source.name = name;
 
 		this.set(name, source);
 		this.addToOrder(name);
@@ -59,11 +61,5 @@ export default class SourceManager extends Map {
 
 		this.delete(name);
 		this.removeFromOrder(name);
-	}
-
-	create(game, sources) {
-		return this.order.map(name => this.get(name).default ? {name} : sources.find(source => source.name === name))
-			.filter(source => source !== undefined)
-			.map(source => new (this.get(source.name).model)(game, source));
 	}
 }

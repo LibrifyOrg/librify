@@ -282,7 +282,12 @@ export default class PluginManager extends Map {
 
 		if(typeof eventFunction !== "function") return;
 
-		await eventFunction.bind(plugin.index)(this.app);
+		try {
+			await eventFunction.bind(plugin.index)(this.app);
+		}
+		catch(err) {
+			this.app.logger.error(`Error while executing event ${event} for plugin ${name}: ${err.stack}`);
+		}
 
 		this.app.logger.debug(`${event.endsWith("e") ? event + "d" : event + "ed"} plugin ${name} in ${this.app.logger.timing(`PluginManager.${event}.${name}`)}`);
 
