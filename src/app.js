@@ -5,6 +5,7 @@ import GameManager from "@/game/manager";
 import ConfigHelper from "@/helper/config";
 import PluginManager from "@/plugin/manager";
 import {EventEmitter} from "events";
+import secrets from "@/../secrets.json";
 
 /**
  * This class is in control of the application, hence its name. It manages the references to all 
@@ -35,6 +36,10 @@ export default class Application extends EventEmitter {
 		 * mananger, that is in charge of managing all the games.
 		 * @type {GameManager} */
 		this.games = new GameManager(this);
+		/** This object contains all the secrets in the secrets.json file in the root folder.
+		 * @type {Object} */
+		this.secrets = secrets;
+
 		this.helpers = {
 			config: new ConfigHelper()
 		}
