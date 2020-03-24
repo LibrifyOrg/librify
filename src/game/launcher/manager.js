@@ -1,8 +1,10 @@
 import LauncherModel from "@/game/launcher/model";
 
 export default class LauncherManager extends Map {
-	constructor() {
+	constructor(app) {
 		super();
+
+		this.app = app;
 	}
 
 	/**
@@ -16,7 +18,7 @@ export default class LauncherManager extends Map {
 
 	/**
 	 * Removes the launcher from the register.
-	 * @param {String} type The name of the launcher to remove
+	 * @param {String} name The name of the launcher to remove
 	 */
 	unregister(name) {
 		this.delete(name);

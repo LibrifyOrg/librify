@@ -17,6 +17,7 @@ import NewsDataType from "@/game/data/news";
 import ImagesDataType from "@/game/data/news";
 import LabelManager from "@/game/label/manager";
 import LabelDataTypeModel from "@/game/label/data";
+import AccountManager from "@/game/account/manager";
 
 export default class GameManager extends Map {
 	constructor(app) {
@@ -24,7 +25,8 @@ export default class GameManager extends Map {
 
 		this.app = app;
 		this.sources = new SourceManager();
-		this.launchers = new LauncherManager();
+		this.launchers = new LauncherManager(this.app);
+		this.accounts = new AccountManager(this.app);
 		this.labels = new LabelManager(this.app);
 		this.panels = new PanelManager();
 		this.actionTypes = new LaunchActionTypeManager();
@@ -52,6 +54,7 @@ export default class GameManager extends Map {
 			this.set(game.id, game);
 		});
 		await this.labels.initialize();
+		await this.accounts.initialize();
 
 		this.app.logger.debug(`loaded ${this.size} game(s) in ${this.app.logger.timing("GameManager.initialize")}`);
 	}
@@ -154,6 +157,7 @@ export default class GameManager extends Map {
 		this.app.logger.timing("GameManager.save");
 
 		await this.labels.save();
+		await this.accounts.save();
 		await this.config.set("games", Array.from(this.values()).map(game => game.toObject())).write();
 
 		this.app.logger.debug(`saved ${this.size} game(s) in ${this.app.logger.timing("GameManager.launch")}`);
