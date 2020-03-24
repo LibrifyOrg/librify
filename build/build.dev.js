@@ -8,5 +8,5 @@ webpack(webpackConfig, err => {
 
 	const endTime = process.hrtime(startTime);
 
-	console.log("Build the webapp successfully %ds and %dms after start", endTime[0], endTime[1] / 1000000);
+	console.log("Built the webapp successfully %ds and %dms after start", endTime[0], endTime[1] / 1000000);
 });
