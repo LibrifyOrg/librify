@@ -12,7 +12,9 @@ import RatingsPanel from "@/game/panel/default/ratings";
 import TimePlayedPanel from "@/game/panel/default/timeplayed";
 import StoragePanel from "@/game/panel/default/storage";
 import InfoPanel from "@/game/panel/default/info";
-import ActionDataType from "./action/data";
+import ActionDataType from "@/game/action/data";
+import NewsDataType from "@/game/data/news";
+import ImagesDataType from "@/game/data/news";
 import LabelManager from "@/game/label/manager";
 import LabelDataTypeModel from "@/game/label/data";
 
@@ -23,17 +25,20 @@ export default class GameManager extends Map {
 		this.app = app;
 		this.sources = new SourceManager();
 		this.launchers = new LauncherManager();
+		this.labels = new LabelManager(this.app);
 		this.panels = new PanelManager();
 		this.actionTypes = new LaunchActionTypeManager();
 		this.dataTypes = new DataTypeManager();
 		this.dataTypes.register("actions", new ActionDataType());
+		this.dataTypes.register("news", new NewsDataType(this.app));
+		this.dataTypes.register("images", new ImagesDataType(this.app));
 		this.dataTypes.register("labels", new LabelDataTypeModel(this.app));
 		this.panels.register("settings", new SettingsPanel());
 		this.panels.register("storage", new StoragePanel());
 		this.panels.register("achievements", new AchievementsPanel());
 		this.panels.register("timeplayed", new TimePlayedPanel());
 		this.panels.register("ratings", new RatingsPanel());
-		this.panels.register("info", new InfoPanel());
+		this.panels.register("info", new InfoPanel(this.app));
 	}
 
 	async initialize() {
