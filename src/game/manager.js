@@ -36,7 +36,7 @@ export default class GameManager extends Map {
 	async initialize() {
 		this.app.logger.timing("GameManager.initialize");
 
-		this.config = await this.app.configs.get("games.json");
+		this.config = await this.app.helpers.config.get("games.json");
 		await this.config.defaults({games: []}).write();
 		this.config.get("games").value().forEach(gameData => {
 			const game = new Game(this.app, gameData);

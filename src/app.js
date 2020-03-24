@@ -2,7 +2,7 @@ import electron from "electron";
 import Logger from "@/logger";
 import UIHandler from "@/ui/handler";
 import GameManager from "@/game/manager";
-import ConfigManager from "@/config/manager";
+import ConfigHelper from "@/helper/config";
 import PluginManager from "@/plugin/manager";
 import {EventEmitter} from "events";
 
@@ -27,10 +27,6 @@ export default class Application extends EventEmitter {
 		 * starting it.
 		 * @type {UIHandler} */
 		this.ui = new UIHandler(this);
-		/** The configs member references the config manager, that as the name implies manages all 
-		 * the configs.
-		 * @type {ConfigManager} */
-		this.configs = new ConfigManager();
 		/** The plugins member is used as a reference for the plugin manager, that manages the 
 		 * plugin as well as the installation, updating thereof. 
 		 * @type {PluginManager} */
@@ -39,6 +35,9 @@ export default class Application extends EventEmitter {
 		 * mananger, that is in charge of managing all the games.
 		 * @type {GameManager} */
 		this.games = new GameManager(this);
+		this.helpers = {
+			config: new ConfigHelper()
+		}
 	}
 
 	/**
