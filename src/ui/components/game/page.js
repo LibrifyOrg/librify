@@ -1,8 +1,8 @@
 import m from "mithril";
 const arrowSvg = m.trust(`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z"/></svg>`);
-import GamePanelComponent from "@/ui/components/gamepanel";
+import GamePanelComponent from "@/ui/components/game/panel";
 
-export default class GameComponent {
+export default class GamePageComponent {
 	oninit(vnode) {
 		this.app = vnode.attrs.app;
 		this.panelType;
@@ -29,10 +29,10 @@ export default class GameComponent {
 		]);
 	}
 
-	view(vnode) {
-		this.game = vnode.attrs.game;
+	view() {
+		this.game = this.app.ui.game;
 
-		if(this.game === undefined) {
+		if(this.app.ui.game === undefined) {
 			return (
 				<div class="game"></div>
 			)
@@ -40,11 +40,13 @@ export default class GameComponent {
 
 		if(this.game !== this.previousGame) this.app.logger.debug(`selected game ${this.game.data.name}`);
 
-		this.previousGame = this.game;
+		this.previousGame = this.app.ui.game;
 
 		let panelButtons = Array.from(this.app.games.panels.values()).map(this.panelToButton.bind(this));
 
 		const secondaryAction = this.game.actions.find(action => !action.primary);
+
+		const labels = this.game.labels.map(id => this.app.games.labels.get(id)).map(label => m(".label", {style: {background: label.color}}, label.name));
 
 		return (
 			<div class="game">
@@ -52,6 +54,7 @@ export default class GameComponent {
 				<div class="info">
 					<div class="container title">
 						<div class="title">{this.game.data.name}</div>
+						<div class="labels">{labels}</div>
 					</div>
 					<div class={`container right ${!this.game.data.banner ? "no-banner" : ""}`}>
 						{this.game.data.banner ? <img class="banner" src={this.game.data.banner} /> : ""}
