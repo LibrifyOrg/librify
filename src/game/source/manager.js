@@ -42,7 +42,7 @@ export default class SourceManager extends Map {
 	 */
 	addToOrder(name) {
 		for(let sourceName of this.order) {
-			source = this.get(sourceName);
+			const source = this.get(sourceName);
 
 			if(!source.dependencies || !source.dependencies.includes(name)) continue;
 
