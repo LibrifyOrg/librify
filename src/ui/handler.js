@@ -10,6 +10,8 @@ export default class UIHandler {
 	}
 
 	startRendering() {
+		this.game = Array.from(this.app.games.values()).sort((a, b) => a.data.name.localeCompare(b.data.name))[0];
+		
 		m.render(document.body, m(WindowView, {app: this.app}));
 		m.route(document.getElementById("body"), "/games", {
 			"/quick": {view: () => m(QuickLaunchView, {app: this.app})},
