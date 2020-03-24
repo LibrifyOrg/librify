@@ -183,6 +183,12 @@ body {
 	}
 }
 
+@keyframes panel-buttons-move {
+	0% {right: 0}
+	3% {right: 0}
+	100% {right: 350px}
+}
+
 #body {
 	width: 100vh;
 	height: calc(100vh - 30px);
@@ -272,6 +278,7 @@ body {
 			overflow: hidden;
 			position: relative;
 			flex-shrink: 0;
+			width: 342px;
 
 			.icon {
 				flex-grow: 0;
@@ -305,10 +312,49 @@ body {
 
 			.title {
 				flex-grow: 1;
-				line-height: 40px;
-				width: 0;
-				padding: 0;
+				height: 40px;
 				transition: all 1s;
+				padding: 0 8px;
+				word-break: break-all;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				width: 278px;
+				overflow: hidden;
+
+				.title-text {
+					height: 16px;
+					line-height: 16px;
+					font-size: 16px;
+				}
+
+				.title-labels {
+					display: flex;
+					flex-direction: row;
+
+					.label {
+						display: inline;
+						min-width: 30px;
+						text-align: center;
+						padding: 0 4px 0 3px;
+						font-size: 8px;
+						color: black;
+						font-style: italic;
+						border-radius: 2px;
+						margin-right: 1px;
+					}
+
+					&.small {
+						.label {
+							display: block;
+							font-size: 0;
+							width: 10px;
+							min-width: 10px;
+							height: 5px;
+							border-radius: 2px;
+						}
+					}
+				}
 			}
 
 			&.selected {
@@ -366,10 +412,6 @@ body {
 		&.opened {
 			width: 350px;
 
-			.game-item .title {
-				padding: 0 8px;
-			}
-
 			.list-toggle svg {
 				transform: rotate(180deg);
 			}
@@ -413,21 +455,42 @@ body {
 			bottom: 0;
 			right: 40px;
 			justify-content: flex-end;
+			align-items: stretch;
 
 			.container {
 				&.title {
 					display: flex;
 					flex-direction: column;
 					justify-content: flex-end;
+					padding: 15px 0;
 
 					.title {
-						height: 80px;
-						line-height: 80px;
+						line-height: 50px;
 						font-size: 50px;
-						padding: 20px;
+						padding: 20px 20px 0 20px;
 						color: white;
 						font-family: "Muli";
 						font-weight: 700;
+						text-align: right;
+					}
+
+					.labels {
+						display: flex;
+						flex-direction: row;
+						justify-content: flex-end;
+						padding: 0 20px 20px 0;
+
+						.label {
+							min-width: 30px;
+							text-align: center;
+							padding: 1px 5px 1px 4px;
+							font-size: 10px;
+							color: black;
+							font-family: "Muli";
+							font-style: italic;
+							border-radius: 4px;
+							margin-right: 2px;
+						}
 					}
 				}
 
@@ -566,7 +629,6 @@ body {
 					}
 
 					&.no-banner {
-						height: 120px;
 						margin-bottom: 0;
 						justify-content: center;
 					}
@@ -585,9 +647,10 @@ body {
 			padding: 1px 0;
 			border-top-left-radius: 6px;
 			border-bottom-left-radius: 6px;
-			z-index: 4;
-			background: rgb(40, 44, 47);
+			z-index: 5;
+			background: rgba(40, 44, 47, 0.1);
 			transition: all 1s;
+			transition-delay: 0s;
 
 			.button {
 				width: 16px;
@@ -595,7 +658,8 @@ body {
 				padding: 10px;
 				margin: 1px 2px;
 				border-radius: 6px;
-				background: rgb(37, 41, 44);
+				background: rgba(37, 41, 44, 0);
+				opacity: 0.8;
 				transition: all 0.2s;
 				cursor: pointer;
 
@@ -606,15 +670,18 @@ body {
 
 				&.selected {
 					background: rgb(32, 33, 36);
+					opacity: 1;
 				}
 
 				&:hover {
 					background: rgb(32, 33, 36);
+					opacity: 1;
 				}
 			}
 
 			&.opened {
-				right: 350px;
+				right: 450px;
+				transition-delay: 0.023s;
 			}
 		}
 
@@ -622,10 +689,64 @@ body {
 			z-index: 4;
 			position: absolute;
 			height: 100vh;
-			width: 350px;
-			right: -350px;
+			width: 490px;
+			right: -490px;
 			transition: right 1s;
 			background: rgb(40, 44, 47);
+			overflow-y: auto;
+
+			&::-webkit-scrollbar {
+				width: 8px;
+				left: -2px;
+			}
+
+			&::-webkit-scrollbar-thumb {
+				background: lighten(rgb(40, 44, 47), 4%);
+				border-radius: 4px;
+
+				&:hover {
+					background: lighten(rgb(40, 44, 47), 12%);
+				}
+			}
+
+			&::-webkit-scrollbar-track {
+				background: transparent;
+			}
+
+			.container {
+				padding: 20px 16px 20px 44px;
+				position: relative;
+
+				.options {
+					position: absolute;
+					left: 0px;
+					width: 40px;
+					display: flex;
+					flex-direction: column;
+
+					.option {
+						width: 40px;
+						height: 40px;
+						border: 1px solid rgb(40, 44, 47);
+						width: 12px;
+						height: 12px;
+						padding: 6px;
+						margin: 2px 8px;
+						border-radius: 6px;
+						cursor: pointer;
+
+						img {
+							width: 12px;
+							height: 12px;
+						}
+
+						&.selected {
+							border: 1px solid rgb(214, 214, 215);
+							border-radius: 6px;
+						}
+					}
+				}
+			}
 
 			&.opened {
 				right: 0;
@@ -646,6 +767,94 @@ body {
 			&.opened {
 				opacity: 0.35;
 				pointer-events: initial;
+			}
+		}
+	}
+}
+
+#panel-info {
+	color: white;
+	font-family: "Open Sans";
+
+	.head {
+		padding-bottom: 16px;
+
+		.title {
+			font-weight: 700;
+			font-size: 35px;
+			margin-bottom: 16px;
+			font-family: "Muli";
+		}
+
+		.description {
+			font-size: 15px;
+		}
+	}
+
+	.news {
+		margin-bottom: 16px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		.title {
+			font-family: "Muli";
+			font-size: 14px;
+			font-weight: 900;
+			margin-bottom: 8px;
+			color: darken(white, 65%);
+			width: 100%;
+
+			span {
+				border-bottom: 2px solid darken(white, 70%);
+				padding-bottom: 0;
+			}
+		}
+
+		.items {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 8px;
+
+			.item {
+				border-radius: 12px;
+				background: rgb(32, 33, 36);
+				margin: 3px 0;
+				padding: 16px 22px;
+
+				.item-title {
+					font-weight: 700;
+					font-family: "Muli";
+					font-size: 15px;
+				}
+
+				.subtitle {
+					font-size: 11px;
+					color: darken(white, 30%);
+					font-style: italic;
+				}
+
+				.summary {
+					font-size: 13px;
+				}
+			}
+		}
+
+		.more {
+			padding: 6px 14px;
+			margin: 0 auto;
+			font-size: 14px;
+			background: rgb(32, 33, 36);
+			color: darken(white, 20%);
+			transition: all 0.3s;
+			cursor: pointer;
+			display: inline;
+			border-radius: 8px;
+			border: 2px solid rgb(40, 44, 47);
+
+			&:hover {
+				color: white;
+				border: 2px solid rgb(32, 33, 36);
 			}
 		}
 	}
