@@ -13,6 +13,8 @@ import TimePlayedPanel from "@/game/panel/default/timeplayed";
 import StoragePanel from "@/game/panel/default/storage";
 import InfoPanel from "@/game/panel/default/info";
 import ActionDataType from "./action/data";
+import LabelManager from "@/game/label/manager";
+import LabelDataTypeModel from "@/game/label/data";
 
 export default class GameManager extends Map {
 	constructor(app) {
@@ -25,6 +27,7 @@ export default class GameManager extends Map {
 		this.actionTypes = new LaunchActionTypeManager();
 		this.dataTypes = new DataTypeManager();
 		this.dataTypes.register("actions", new ActionDataType());
+		this.dataTypes.register("labels", new LabelDataTypeModel(this.app));
 		this.panels.register("settings", new SettingsPanel());
 		this.panels.register("storage", new StoragePanel());
 		this.panels.register("achievements", new AchievementsPanel());
@@ -43,6 +46,7 @@ export default class GameManager extends Map {
 			
 			this.set(game.id, game);
 		});
+		await this.labels.initialize();
 
 		this.app.logger.debug(`loaded ${this.size} game(s) in ${this.app.logger.timing("GameManager.initialize")}`);
 	}
@@ -144,6 +148,7 @@ export default class GameManager extends Map {
 	async save() {
 		this.app.logger.timing("GameManager.save");
 
+		await this.labels.save();
 		await this.config.set("games", Array.from(this.values()).map(game => game.toObject())).write();
 
 		this.app.logger.debug(`saved ${this.size} game(s) in ${this.app.logger.timing("GameManager.launch")}`);
