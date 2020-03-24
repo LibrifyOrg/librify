@@ -116,17 +116,16 @@ export default class GameManager extends Map {
 	}
 
 	async update(games, sourceNames) {
-		if(games === undefined) games = Array.from(this.values());
-		if(sourceNames === undefined) sourceNames = this.sources.order;
+		let sources;
 
-		const sources = sourceNames.map(sourceName => this.sources.get(sourceName));
+		if(games === undefined) games = Array.from(this.values());
+		if(sourceNames === undefined) {
+			sources = this.sources.order.map(name => this.sources.get(name)).filter(source => source.default);
+		}
+		else sources = sourceNames.map(sourceName => this.sources.get(sourceName));
 
 		for(let source of sources) {
-			const selectedGames = source.default ? games : games.filter(game => game.data.sources.find(context => context.name === source.name));
-
-			if(selectedGames.length === 0) continue;
-
-			const data = selectedGames.map(game => {
+			const data = games.map(game => {
 				let context = game.data.sources.find(context => context.name === source.name);
 
 				if(context === undefined) {
