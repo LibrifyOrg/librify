@@ -53,11 +53,11 @@ export default class Application extends EventEmitter {
 	async start() {
 		this.logger.debug("starting application").timing("Application.start");
 
-		await this.games.initialize();
 		await this.plugins.loadAll();
 		await this.plugins.enableAll();
-		await this.games.findAll();
+		await this.games.initialize();
 		this.ui.startRendering();
+		await this.games.findAllInstalled();
 		this.emit("started");
 
 		this.logger.info(`started application in ${this.logger.timing("Application.start")}`);
