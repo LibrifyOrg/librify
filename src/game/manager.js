@@ -65,25 +65,27 @@ export default class GameManager extends Map {
 		m.redraw();
 	}
 
-	async findAll() {
+	async findAllInstalled() {
 		this.app.logger.timing("GameManager.findAll");
 		let sizeBefore = this.size;
 
 		const launchers = Array.from(this.launchers.keys());
 
 		for(let name of launchers) {
-			await this.find(name)
+			await this.findInstalled(name);
 		}
 
 		this.app.logger.debug(`found ${this.size-sizeBefore} new game(s) in ${this.app.logger.timing("GameManager.findAll")}`);
 	}
 
-	async find(launcherName) {
+	async findInstalled(launcherName) {
 		this.app.logger.timing("GameManager.find");
 		let sizeBefore = this.size;
 
 		const launcher = this.launchers.get(launcherName);
-		const games = await launcher.fetchNewGames(Array.from(this.values()));
+		const games = await launcher.fetchInstalledGames(Array.from(this.values()));
+
+		if(!Array.isArray(games)) return;
 
 		for(let game of games) {
 			if(Array.from(this.values()).find(oldGame => oldGame.data.name === game.data.name)) {
