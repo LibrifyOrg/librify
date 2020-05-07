@@ -100,9 +100,9 @@ export default class GameManager extends Map {
 				continue;
 			}
 
-			game.data.origin = launcherName;
+			newGame.data.origin = launcherName;
 
-			this.set(game.id, game);
+			this.set(newGame.id, newGame);
 		}
 
 		this.app.logger.debug(`${launcherName} found ${this.size-sizeBefore} new game(s) out of ${games.length} in ${this.app.logger.timing("GameManager.find")}`);
