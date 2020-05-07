@@ -1,11 +1,18 @@
 export default class AccountModel {
-	constructor(data, user) {
+	constructor(data) {
 		this.id = data.id;
-		this.user = user;
 		this.loggedin = false;
 		this.data = data;
 	}
 
+	set id(id) {
+		this.data.id = id;
+	}
+
+	get id() {
+		return this.data.id;
+	}
+
 	login() {}
-	fetchOwnedGames(skipGames) {}
+	fetchGames(skipGames) {}
 }
