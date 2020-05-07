@@ -65,30 +65,38 @@ export default class GameManager extends Map {
 		m.redraw();
 	}
 
-	async findAllInstalled() {
+	async findAll({installedOnly = true} = {}) {
 		this.app.logger.timing("GameManager.findAll");
 		let sizeBefore = this.size;
 
 		const launchers = Array.from(this.launchers.keys());
 
 		for(let name of launchers) {
-			await this.findInstalled(name);
+			await this.findInstalled(name, {installedOnly});
 		}
 
 		this.app.logger.debug(`found ${this.size-sizeBefore} new game(s) in ${this.app.logger.timing("GameManager.findAll")}`);
 	}
 
-	async findInstalled(launcherName) {
+	async find(launcherName, {installedOnly = true} = {}) {
 		this.app.logger.timing("GameManager.find");
 		let sizeBefore = this.size;
 
 		const launcher = this.launchers.get(launcherName);
-		const games = await launcher.fetchInstalledGames(Array.from(this.values()));
+		const newGames = await launcher.fetchGames(Array.from(this.values()));
 
-		if(!Array.isArray(games)) return;
+		if(!Array.isArray(newGames)) return;
 
-		for(let game of games) {
-			if(Array.from(this.values()).find(oldGame => oldGame.data.name === game.data.name)) {
+		const games = Array.from(this.values());
+
+		if(!installedOnly) {
+			const accounts = Array.from(this.accounts.values()).filter(account => account.data.launcher === launcherName);
+
+			const ownedGames;
+		}
+
+		for(let newGame of newGames) {
+			if(games.find(game => game.data.name === newGame.data.name) || (!newGame instanceof Game)) {
 				continue;
 			}
 
