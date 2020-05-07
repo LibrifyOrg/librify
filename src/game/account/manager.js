@@ -9,9 +9,9 @@ export default class AccountManager extends Map {
 		this.models = new Map();
 	}
 
-	async create(launcher, user) {
+	async create(launcher) {
 		const id = shortid();
-		const account = new (this.models.get(launcher))({id, launcher}, user);
+		const account = new (this.models.get(launcher))({id, launcher});
 
 		this.set(id, account);
 	}
@@ -34,9 +34,9 @@ export default class AccountManager extends Map {
 		this.config = await this.app.helpers.config.get("accounts.json");
 		await this.config.defaults({accounts: []}).write();
 		this.config.get("accounts").value().forEach(accountData => {
-			if(!this.has(accountData.launcher) || !accountData.name) return;
+			if(!this.has(accountData.launcher) || !accountData.name || !accountData.launcher) return;
 
-			this.set(accountData.id, new (this.models.get(accountData.launcher)));
+			this.set(accountData.id, new (this.models.get(accountData.launcher))(accountData));
 		});
 
 		this.app.logger.debug(`initialized ${this.size} accounts(s) in ${this.app.logger.timing("AccountManager.initialize")}`);
