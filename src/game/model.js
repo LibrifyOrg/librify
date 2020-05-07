@@ -1,4 +1,4 @@
-const protectedKeys = ["id, addedOn"];
+const protectedKeys = ["id", "addedOn"];
 
 export default class GameModel {
 	constructor(app, data) {
