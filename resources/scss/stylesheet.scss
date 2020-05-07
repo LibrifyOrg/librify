@@ -248,6 +248,7 @@ body {
 		.container {
 			width: 100%;
 			overflow-y: auto;
+			overflow-x: hidden;
 
 			&::-webkit-scrollbar {
 				width: 0;
@@ -470,7 +471,7 @@ body {
 						padding: 20px 20px 0 20px;
 						color: white;
 						font-family: "Muli";
-						font-weight: 700;
+						font-weight: 400;
 						text-align: right;
 					}
 
@@ -800,14 +801,14 @@ body {
 		.title {
 			font-family: "Muli";
 			font-size: 14px;
-			font-weight: 900;
+			font-weight: 400;
 			margin-bottom: 8px;
 			color: darken(white, 65%);
 			width: 100%;
 
 			span {
-				border-bottom: 2px solid darken(white, 70%);
-				padding-bottom: 0;
+				border-bottom: 1px solid darken(white, 70%);
+				padding-bottom: 2px;
 			}
 		}
 
